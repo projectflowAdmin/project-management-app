@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projectmanagementapp.domain.dao.mapper.ProjectMapper">
+
+  <resultMap id="projectResultMap" type="com.projectmanagementapp.domain.model.Project">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long"/>
+      <arg column="code" javaType="java.lang.String"/>
+      <arg column="name" javaType="java.lang.String"/>
+      <arg column="status" javaType="java.lang.String"/>
+      <arg column="owner" javaType="java.lang.String"/>
+      <arg column="description" javaType="java.lang.String"/>
+    </constructor>
+  </resultMap>
+
+  <select id="findAll" resultMap="projectResultMap">
+    SELECT id, code, name, status, owner, description
+    FROM projects
+    ORDER BY id
+  </select>
+
+  <select id="findById" parameterType="long" resultMap="projectResultMap">
+    SELECT id, code, name, status, owner, description
+    FROM projects
+    WHERE id = #{id}
+  </select>
+
+  <select id="create" parameterType="com.projectmanagementapp.dto.ProjectRequest" resultMap="projectResultMap">
+    INSERT INTO projects (code, name, status, owner, description)
+    VALUES (#{code}, #{name}, #{status}, #{owner}, #{description})
+    RETURNING id, code, name, status, owner, description
+  </select>
+
+  <select id="update" resultMap="projectResultMap">
+    UPDATE projects
+    SET code = #{request.code},
+        name = #{request.name},
+        status = #{request.status},
+        owner = #{request.owner},
+        description = #{request.description}
+    WHERE id = #{id}
+    RETURNING id, code, name, status, owner, description
+  </select>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM projects
+    WHERE id = #{id}
+  </delete>
+</mapper>

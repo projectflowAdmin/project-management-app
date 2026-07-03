@@ -1,9 +1,9 @@
-package com.projectmanagementapp.dto;
+package com.projectmanagementapp.domain.model;
 
 import lombok.Value;
 
 @Value
-public class ProjectResponse {
+public class Project {
     Long id;
     String code;
     String name;

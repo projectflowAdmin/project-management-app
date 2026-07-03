@@ -88,4 +88,5 @@ Spring Boot の DB 接続設定は [application.yml](/abs/path/C:/Users/81802/De
 - API 仕様変更時は `docs/04_API一覧.md` を更新する
 - DB 設計変更時は `docs/05_DB設計.md` と `docs/06_ER図.md` を更新する
 - 画面追加時は `docs/03_画面一覧.md` を更新する
-- 命名、ブランチ運用、レビュー観点は `docs/07_開発ルール.md` を参照する
+- 命名、ブランチ運用、コーディング規約は `docs/07_コーディング規約.md` を参照する
+- レビュー観点は `docs/10_レビュー観点.md` を参照する

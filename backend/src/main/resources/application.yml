@@ -6,9 +6,18 @@ spring:
     username: project_management_app
     password: project_management_app
     driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
 
 server:
   port: 8080
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.projectmanagementapp.domain.model
+  configuration:
+    map-underscore-to-camel-case: true
 
 projectmanagementapp:
   cors:

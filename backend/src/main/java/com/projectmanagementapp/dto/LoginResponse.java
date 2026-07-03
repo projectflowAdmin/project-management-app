@@ -1,9 +1,10 @@
 package com.projectmanagementapp.dto;
 
-public record LoginResponse(
-    String userName,
-    String token,
-    String message
-) {
-}
+import lombok.Value;
 
+@Value
+public class LoginResponse {
+    String userName;
+    String token;
+    String message;
+}

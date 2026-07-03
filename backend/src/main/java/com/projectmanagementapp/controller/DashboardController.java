@@ -1,7 +1,7 @@
 package com.projectmanagementapp.controller;
 
 import com.projectmanagementapp.dto.DashboardSummaryResponse;
-import com.projectmanagementapp.service.DashboardService;
+import com.projectmanagementapp.domain.service.DashboardService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,12 +1,12 @@
 package com.projectmanagementapp.dto;
 
 import java.util.List;
+import lombok.Value;
 
-public record DashboardSummaryResponse(
-    int activeProjects,
-    int openIssues,
-    int dueToday,
-    List<String> recentUpdates
-) {
+@Value
+public class DashboardSummaryResponse {
+    int activeProjects;
+    int openIssues;
+    int dueToday;
+    List<String> recentUpdates;
 }
-

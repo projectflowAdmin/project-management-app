@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projectmanagementapp.domain.dao.mapper.IssueMapper">
+
+  <resultMap id="issueResultMap" type="com.projectmanagementapp.domain.model.Issue">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long"/>
+      <arg column="issue_key" javaType="java.lang.String"/>
+      <arg column="project_id" javaType="java.lang.Long"/>
+      <arg column="project_name" javaType="java.lang.String"/>
+      <arg column="title" javaType="java.lang.String"/>
+      <arg column="status" javaType="java.lang.String"/>
+      <arg column="priority" javaType="java.lang.String"/>
+      <arg column="assignee" javaType="java.lang.String"/>
+      <arg column="due_date" javaType="java.lang.String"/>
+      <arg column="description" javaType="java.lang.String"/>
+    </constructor>
+  </resultMap>
+
+  <select id="findAll" resultMap="issueResultMap">
+    SELECT i.id,
+           i.issue_key,
+           i.project_id,
+           p.name AS project_name,
+           i.title,
+           i.status,
+           i.priority,
+           i.assignee,
+           i.due_date,
+           i.description
+    FROM issues i
+    JOIN projects p ON p.id = i.project_id
+    ORDER BY i.id
+  </select>
+
+  <select id="findById" parameterType="long" resultMap="issueResultMap">
+    SELECT i.id,
+           i.issue_key,
+           i.project_id,
+           p.name AS project_name,
+           i.title,
+           i.status,
+           i.priority,
+           i.assignee,
+           i.due_date,
+           i.description
+    FROM issues i
+    JOIN projects p ON p.id = i.project_id
+    WHERE i.id = #{id}
+  </select>
+
+  <select id="create" parameterType="com.projectmanagementapp.dto.IssueRequest" resultMap="issueResultMap">
+    WITH inserted AS (
+      INSERT INTO issues (issue_key, project_id, title, status, priority, assignee, due_date, description)
+      VALUES (#{issueKey}, #{projectId}, #{title}, #{status}, #{priority}, #{assignee}, #{dueDate}, #{description})
+      RETURNING id, issue_key, project_id, title, status, priority, assignee, due_date, description
+    )
+    SELECT i.id,
+           i.issue_key,
+           i.project_id,
+           p.name AS project_name,
+           i.title,
+           i.status,
+           i.priority,
+           i.assignee,
+           i.due_date,
+           i.description
+    FROM inserted i
+    JOIN projects p ON p.id = i.project_id
+  </select>
+
+  <select id="update" resultMap="issueResultMap">
+    WITH updated AS (
+      UPDATE issues
+      SET issue_key = #{request.issueKey},
+          project_id = #{request.projectId},
+          title = #{request.title},
+          status = #{request.status},
+          priority = #{request.priority},
+          assignee = #{request.assignee},
+          due_date = #{request.dueDate},
+          description = #{request.description}
+      WHERE id = #{id}
+      RETURNING id, issue_key, project_id, title, status, priority, assignee, due_date, description
+    )
+    SELECT i.id,
+           i.issue_key,
+           i.project_id,
+           p.name AS project_name,
+           i.title,
+           i.status,
+           i.priority,
+           i.assignee,
+           i.due_date,
+           i.description
+    FROM updated i
+    JOIN projects p ON p.id = i.project_id
+  </select>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM issues
+    WHERE id = #{id}
+  </delete>
+</mapper>

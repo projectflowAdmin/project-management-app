@@ -2,7 +2,7 @@ package com.projectmanagementapp.controller;
 
 import com.projectmanagementapp.dto.LoginRequest;
 import com.projectmanagementapp.dto.LoginResponse;
-import com.projectmanagementapp.service.AuthService;
+import com.projectmanagementapp.domain.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
