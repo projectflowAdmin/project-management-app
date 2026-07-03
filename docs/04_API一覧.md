@@ -1,11 +1,10 @@
-# 04 API荳隕ｧ
+# 04 API一覧
 
-| 繝｡繧ｽ繝・ラ | 繝代せ | 讎りｦ・|
+| メソッド | パス | 概要 |
 | --- | --- | --- |
-| GET | `/api/v1/health` | 繝倥Ν繧ｹ繝√ぉ繝・け |
-| POST | `/api/v1/auth/login` | 繝ｭ繧ｰ繧､繝ｳ API |
-| GET | `/api/v1/dashboard` | 繝繝・す繝･繝懊・繝蛾寔險亥叙蠕・|
-| GET | `/api/v1/projects` | 繝励Ο繧ｸ繧ｧ繧ｯ繝井ｸ隕ｧ蜿門ｾ・|
-| GET | `/api/v1/issues` | 隱ｲ鬘御ｸ隕ｧ蜿門ｾ・|
-| GET | `/api/v1/issues/{issueId}` | 隱ｲ鬘瑚ｩｳ邏ｰ蜿門ｾ・|
-
+| GET | `/api/v1/health` | ヘルスチェック |
+| POST | `/api/v1/auth/login` | ログイン API |
+| GET | `/api/v1/dashboard` | ダッシュボード集計取得 |
+| GET | `/api/v1/projects` | プロジェクト一覧取得 |
+| GET | `/api/v1/issues` | 課題一覧取得 |
+| GET | `/api/v1/issues/{issueId}` | 課題詳細取得 |
