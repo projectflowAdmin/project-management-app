@@ -8,9 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   sql:
     init:
-      mode: always
-      schema-locations: classpath:sql/schema.sql
-      data-locations: classpath:sql/data.sql
+      mode: never
 
 server:
   port: 8080
