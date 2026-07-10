@@ -24,6 +24,14 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 project-management-app/
 ├─ README.md
 ├─ docs/
+│  ├─ 00_Dify入力用_要件コンテキスト.md
+│  ├─ 01_要件定義.md
+│  ├─ 03_画面一覧.md
+│  ├─ 04_API一覧.md
+│  ├─ 05_DB設計.md
+│  ├─ 06_コーディング規約.md
+│  ├─ 08_レビュー観点.md
+│  └─ 09_環境構築手順書.md
 ├─ frontend/
 ├─ backend/
 └─ .gitignore
@@ -85,8 +93,20 @@ Spring Boot の DB 接続設定は [application.yml](/abs/path/C:/Users/81802/De
 ## 開発ルール
 
 - 実在企業名、社内情報、機密情報を含めない
+- 追加要件を検討する場合は、まず `docs/01_要件定義.md` の「要件追加テンプレート」を使用する
 - API 仕様変更時は `docs/04_API一覧.md` を更新する
 - DB 設計変更時は `docs/05_DB設計.md` を更新する
 - 画面追加時は `docs/03_画面一覧.md` を更新する
 - 命名、ブランチ運用、コーディング規約は `docs/06_コーディング規約.md` を参照する
 - レビュー観点は `docs/08_レビュー観点.md` を参照する
+- 追加開発時は、Issue本文またはPR本文でdocs更新対象を明記する
+
+## Dify利用
+
+Difyで追加開発Issue案を作成する場合は、以下の統合Markdownファイルを入力してください。
+
+```text
+docs/00_Dify入力用_要件コンテキスト.md
+```
+
+Difyで追加Issue案を作成する場合も、`docs/01_要件定義.md` の要件追加テンプレートとdocs更新対象に沿って整理してください。
