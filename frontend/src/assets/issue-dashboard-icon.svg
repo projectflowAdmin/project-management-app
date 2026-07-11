@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">課題アイコン</title>
+  <desc id="desc">透明背景にチェック付きの書類を描いた課題用アイコン</desc>
+  <path d="M41 10H22C19.7909 10 18 11.7909 18 14V50C18 52.2091 19.7909 54 22 54H42C44.2091 54 46 52.2091 46 50V17L41 10Z" fill="#FFF8E6" stroke="#C98A13" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M41 10V17H46" stroke="#C98A13" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M26 28L30 32L37 24" stroke="#D99000" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M26 43L30 47L37 39" stroke="#D99000" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M40 30H42" stroke="#6B5A2A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M40 45H42" stroke="#6B5A2A" stroke-width="3" stroke-linecap="round"/>
+</svg>
