@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
-import PageSection from "../components/PageSection.vue";
+import PageSection from "../../components/PageSection.vue";
 
 const issues = [
   { id: 1, key: "ISS-101", title: "ログイン画面の入力検証を追加", status: "対応中", project: "Alpha Lane", priority: "High", assignee: "Airi Kato" },

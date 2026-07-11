@@ -27,9 +27,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
-import PageSection from "../components/PageSection.vue";
-import { issueApi } from "../api/issueApi";
-import type { Issue } from "../types/issue";
+import PageSection from "../../components/PageSection.vue";
+import { issueApi } from "../../api/issueApi";
+import type { Issue } from "../../types/issue";
 
 const props = defineProps<{ id: string }>();
 const issue = ref<Issue>();

@@ -39,10 +39,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import PageSection from "../components/PageSection.vue";
-import { dashboardApi } from "../api/dashboardApi";
-import { healthApi } from "../api/healthApi";
-import type { Dashboard } from "../types/dashboard";
+import PageSection from "../../components/PageSection.vue";
+import { dashboardApi } from "../../api/dashboardApi";
+import { healthApi } from "../../api/healthApi";
+import type { Dashboard } from "../../types/dashboard";
 
 const router = useRouter();
 const dashboard = ref<Dashboard>();

@@ -1,15 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
-import DashboardView from "../views/DashboardView.vue";
-import ProjectListView from "../views/ProjectListView.vue";
-import ProjectFormView from "../views/ProjectFormView.vue";
-import IssueListView from "../views/IssueListView.vue";
-import IssueFormView from "../views/IssueFormView.vue";
-import IssueDetailView from "../views/IssueDetailView.vue";
+import LoginView from "../views/Login/LoginView.vue";
+import DashboardView from "../views/Dashboard/DashboardView.vue";
+import ProjectListView from "../views/ProjectList/ProjectListView.vue";
+import ProjectFormView from "../views/ProjectForm/ProjectFormView.vue";
+import IssueListView from "../views/IssueList/IssueListView.vue";
+import IssueFormView from "../views/IssueForm/IssueFormView.vue";
+import IssueDetailView from "../views/IssueDetail/IssueDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", name: "dashboard", component: DashboardView },
+    { path: "/", redirect: "/login" },
+    { path: "/login", name: "login", component: LoginView, meta: { publicLayout: true } },
+    { path: "/dashboard", name: "dashboard", component: DashboardView },
     { path: "/projects", name: "projects", component: ProjectListView },
     { path: "/projects/new", name: "project-new", component: ProjectFormView },
     { path: "/projects/:id/edit", name: "project-edit", component: ProjectFormView, props: true },

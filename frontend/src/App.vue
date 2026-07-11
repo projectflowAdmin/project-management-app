@@ -1,7 +1,9 @@
 <template>
-  <div class="shell">
+  <RouterView v-if="isPublicLayout" />
+
+  <div v-else class="shell">
     <aside class="sidebar">
-      <RouterLink class="brand" to="/">
+      <RouterLink class="brand" to="/dashboard">
         <span class="brand-mark">PF</span>
         <span>
           <strong>ProjectFlow</strong>
@@ -10,7 +12,7 @@
       </RouterLink>
 
       <nav class="menu">
-        <RouterLink to="/">ダッシュボード</RouterLink>
+        <RouterLink to="/dashboard">ダッシュボード</RouterLink>
         <RouterLink to="/projects">プロジェクト</RouterLink>
         <RouterLink to="/issues">課題</RouterLink>
       </nav>
@@ -33,5 +35,9 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { computed } from "vue";
+import { RouterLink, RouterView, useRoute } from "vue-router";
+
+const route = useRoute();
+const isPublicLayout = computed(() => route.meta.publicLayout === true);
 </script>

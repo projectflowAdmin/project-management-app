@@ -41,9 +41,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { RouterLink } from "vue-router";
-import PageSection from "../components/PageSection.vue";
-import { projectApi } from "../api/projectApi";
-import type { Project } from "../types/project";
+import PageSection from "../../components/PageSection.vue";
+import { projectApi } from "../../api/projectApi";
+import type { Project } from "../../types/project";
 
 const projects = ref<Project[]>([]);
 const error = ref("");

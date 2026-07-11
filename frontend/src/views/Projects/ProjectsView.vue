@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import PageSection from "../components/PageSection.vue";
+import PageSection from "../../components/PageSection.vue";
 
 const projects = [
   { code: "PJF-101", name: "Alpha Lane", status: "進行中", owner: "Airi Kato" },

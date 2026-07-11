@@ -25,9 +25,9 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
-import PageSection from "../components/PageSection.vue";
-import { projectApi } from "../api/projectApi";
-import type { ProjectRequest } from "../types/project";
+import PageSection from "../../components/PageSection.vue";
+import { projectApi } from "../../api/projectApi";
+import type { ProjectRequest } from "../../types/project";
 
 const props = defineProps<{ id?: string }>();
 const router = useRouter();

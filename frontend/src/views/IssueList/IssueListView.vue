@@ -58,11 +58,11 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { RouterLink } from "vue-router";
-import PageSection from "../components/PageSection.vue";
-import { issueApi } from "../api/issueApi";
-import { projectApi } from "../api/projectApi";
-import type { Issue, IssueStatus } from "../types/issue";
-import type { Project } from "../types/project";
+import PageSection from "../../components/PageSection.vue";
+import { issueApi } from "../../api/issueApi";
+import { projectApi } from "../../api/projectApi";
+import type { Issue, IssueStatus } from "../../types/issue";
+import type { Project } from "../../types/project";
 
 const issues = ref<Issue[]>([]);
 const projects = ref<Project[]>([]);
