@@ -42,7 +42,9 @@
         </div>
       </article>
       <article class="stat-card stat-todo">
-        <span class="stat-icon" aria-hidden="true">TD</span>
+        <span class="stat-icon todo-stat-icon" aria-hidden="true">
+          <img :src="todoDashboardIcon" alt="" />
+        </span>
         <div class="stat-copy">
           <span class="stat-label">未着手</span>
           <strong>{{ dashboard?.todoCount ?? "-" }}</strong>
@@ -140,6 +142,7 @@ import issueDashboardIcon from "../../assets/issue-dashboard-icon.svg";
 import progressDashboardIcon from "../../assets/progress-dashboard-icon.png";
 import projectDashboardIcon from "../../assets/project-dashboard-icon.png";
 import reviewDashboardIcon from "../../assets/review-dashboard-icon.png";
+import todoDashboardIcon from "../../assets/todo-dashboard-icon.png";
 import type { Dashboard } from "../../types/dashboard";
 import type { IssueStatus } from "../../types/issue";
 
