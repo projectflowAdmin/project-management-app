@@ -36,16 +36,6 @@ assignees: ""
 
 ---
 
-## 受入条件
-
-- [ ]
-
-- [ ]
-
-- [ ]
-
----
-
 ## 画面影響
 
 - なし
@@ -76,38 +66,6 @@ assignees: ""
 
 ---
 
-## Backend影響
-
-- Controller
-
-- Service
-
-- Repository
-
-- Mapper
-
-- DTO
-
-- Entity
-
-- Config
-
----
-
-## Frontend影響
-
-- View
-
-- Component
-
-- API Client
-
-- Router
-
-- Type
-
----
-
 ## docs更新対象
 
 - [ ] 01_システム仕様書.md
@@ -117,46 +75,6 @@ assignees: ""
 - [ ] 05_コーディング規約.md
 - [ ] 06_レビュー観点.md
 - [ ] 07_環境構築手順書.md
-
----
-
-## テスト観点
-
-正常系
-
-異常系
-
-画面
-
-API
-
-DB
-
----
-
-## 想定難易度
-
-- 初級
-
-- 初中級
-
-- 中級
-
-- 上級
-
----
-
-## 想定工数
-
-例
-
-0.5日
-
-1日
-
-2日
-
-3日
 
 ---
 
