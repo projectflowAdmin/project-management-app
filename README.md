@@ -165,3 +165,5 @@ docs/01_システム仕様書.md
 ```
 
 Difyで追加Issue案を作成する場合も、`docs/01_システム仕様書.md` のDify利用ルールと `.github/ISSUE_TEMPLATE/feature_request.md` の構成に沿って整理してください。
+
+Difyは、システム仕様書の「現在実装済み機能」と「追加開発バックログ」をもとに、実装済み機能と追加開発候補を判断します。
