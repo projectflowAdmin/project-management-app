@@ -29,7 +29,7 @@ project-management-app/
 ├─ docs/
 │  ├─ 01_システム仕様書.md
 │  ├─ 02_画面一覧.md
-│  ├─ 03_API仕様.md
+│  ├─ 03_API一覧.md
 │  ├─ 04_DB設計.md
 │  ├─ 05_コーディング規約.md
 │  ├─ 06_レビュー観点.md
@@ -39,6 +39,12 @@ project-management-app/
 ├─ backend/
 └─ .gitignore
 ```
+
+## docsの役割
+
+- `docs/02_画面一覧.md`: 現在存在する画面の一覧を管理する
+- `docs/03_API一覧.md`: 現在提供しているAPI一覧を管理する
+- 画面・APIの詳細仕様はGitHub Issueとソースコードを正とする
 
 ## frontend起動手順
 
@@ -106,10 +112,10 @@ Spring Boot の DB 接続設定は `backend/src/main/resources/application.yml` 
 - 実在企業名、社内情報、機密情報を含めない
 - 追加開発前に `docs/08_ドキュメント更新ルール.md` を確認する
 - 追加仕様を検討する場合は、GitHub Issue Template の `feature_request.md` を使用する
-- API 仕様変更時は `docs/03_API仕様.md` を更新する
+- API追加時は `docs/03_API一覧.md` の一覧表へ1行追加する
 - DB 設計変更時は `docs/04_DB設計.md` を更新する
 - DB 変更SQLは `backend/src/main/resources/sql/changes` に採番して追加する
-- 画面追加時は `docs/02_画面一覧.md` を更新する
+- 画面追加時は `docs/02_画面一覧.md` の一覧表へ1行追加する
 - 命名、ブランチ運用、コーディング規約は `docs/05_コーディング規約.md` を参照する
 - レビュー観点は `docs/06_レビュー観点.md` を参照する
 - 追加開発時は、Issue本文またはPR本文でdocs更新対象を明記する
