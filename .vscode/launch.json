@@ -9,7 +9,6 @@
       "mainClass": "com.projectmanagementapp.ProjectFlowApplication",
       "projectName": "project-management-app",
       "args": "--server.port=8080",
-      "envFile": "${workspaceFolder}/.env",
       "preLaunchTask": "Frontend: npm run dev"
     },
     {

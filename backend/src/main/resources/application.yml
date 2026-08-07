@@ -1,10 +1,9 @@
 spring:
   application:
     name: project-management-app
+  profiles:
+    default: local
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app
-    username: postgres
-    password: postgres
     driver-class-name: org.postgresql.Driver
   sql:
     init:

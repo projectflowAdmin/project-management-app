@@ -309,7 +309,25 @@ psql -h localhost -p 5432 -U postgres -d postgres
 
 ## 9. DB接続設定
 
-Backendの接続設定は `backend/src/main/resources/application.yml` に定義されています。
+DB接続情報は、Git管理対象外の `backend/src/main/resources/application-local.yml` に設定します。
+
+以下の手順でローカル用設定ファイルを作成してください。
+
+1. VS Codeのエクスプローラーで `backend/src/main/resources` ディレクトリを開く
+2. `resources` ディレクトリを右クリックし、「新しいファイル」を選択する
+3. ファイル名に `application-local.yml` を入力する
+4. 下記のYAMLを記載して保存する
+
+```text
+backend/
+└─ src/
+   └─ main/
+      └─ resources/
+         ├─ application.yml
+         └─ application-local.yml
+```
+
+`application-local.yml` に以下を記載します。
 
 ```yaml
 spring:
@@ -320,10 +338,11 @@ spring:
     driver-class-name: org.postgresql.Driver
 ```
 
-このプロジェクトでは、DB接続先を `localhost:5432`、データベースを `postgres`、スキーマを `management_app` に固定しています。
+上記はローカル開発用の設定例です。PostgreSQLの `postgres` ユーザーに別のパスワードを設定している場合は、`password` を実際の値に変更します。
 
-PostgreSQLの `postgres` ユーザーには、パスワード `postgres` を設定してください。
-Backendのユーザー名とパスワードも `application.yml` で `postgres` に固定しています。
+`application-local.yml` は `.gitignore` の対象であり、Gitへコミットしないでください。このファイルは `resources` 配下にあるため、ローカルでJARを作成するとJAR内に含まれます。`application-local.yml` を含むローカルビルドのJARは共有・公開しないでください。
+
+`application.yml` で `local` を既定プロファイルとしているため、ローカル起動時に追加のプロファイル指定は不要です。共有環境や本番環境では `application-local.yml` を使用せず、`SPRING_DATASOURCE_URL`、`SPRING_DATASOURCE_USERNAME`、`SPRING_DATASOURCE_PASSWORD` を環境側から設定してください。
 
 ## 10. DB初期構築SQL
 
@@ -601,7 +620,7 @@ Shell Command: Install 'code' command in PATH
 - `postgres` ロールが存在すること
 - `postgres` データベースが存在すること
 - パスワードが正しいこと
-- `postgres` ユーザーのパスワードが `postgres` であること
+- PostgreSQLの `postgres` ユーザーのパスワードと `application-local.yml` の `password` が一致していること
 - 初期SQLを番号順に実行済みであること
 
 ### VS CodeからFrontendが起動しない

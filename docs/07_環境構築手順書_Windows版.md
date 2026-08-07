@@ -210,8 +210,7 @@ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 | Locale | Default locale |
 | Stack Builder | 必須ではないため未選択で可 |
 
-PostgreSQLインストール時は、`postgres` ユーザーのパスワードに `postgres` を設定してください。
-Backendの `application.yml` でも、ユーザー名とパスワードに `postgres` を指定しています。
+PostgreSQLインストール時に、`postgres` ユーザーのパスワードを設定します。以降の設定例ではローカル開発用に `postgres` を使用しますが、別のパスワードを設定しても問題ありません。その場合は、後述の `application-local.yml` に実際のパスワードを記載してください。
 
 ### 5.5 PostgreSQL サービスの起動確認
 
@@ -230,7 +229,25 @@ PostgreSQLのバージョンやインストール方法によって、サービ�
 
 ### 5.6 DB 接続設定
 
-Backend の接続設定は `backend/src/main/resources/application.yml` に定義されています。
+DB接続情報は、Git管理対象外の `backend/src/main/resources/application-local.yml` に設定します。
+
+以下の手順でローカル用設定ファイルを作成してください。
+
+1. VS Codeのエクスプローラーで `backend/src/main/resources` フォルダーを開く
+2. `resources` フォルダーを右クリックし、「新しいファイル」を選択する
+3. ファイル名に `application-local.yml` を入力する
+4. 下記のYAMLを記載して保存する
+
+```text
+backend/
+└─ src/
+   └─ main/
+      └─ resources/
+         ├─ application.yml
+         └─ application-local.yml
+```
+
+`application-local.yml` に以下を記載します。
 
 ```yaml
 spring:
@@ -241,7 +258,11 @@ spring:
     driver-class-name: org.postgresql.Driver
 ```
 
-このプロジェクトでは、DB接続先を `localhost:5432`、データベースを `postgres`、スキーマを `management_app` に固定しています。
+上記はローカル開発用の設定例です。PostgreSQLインストール時に別のパスワードを設定した場合は、`password` を実際の値に変更します。
+
+`application-local.yml` は `.gitignore` の対象であり、Gitへコミットしないでください。このファイルは `resources` 配下にあるため、ローカルでJARを作成するとJAR内に含まれます。`application-local.yml` を含むローカルビルドのJARは共有・公開しないでください。
+
+`application.yml` で `local` を既定プロファイルとしているため、ローカル起動時に追加のプロファイル指定は不要です。共有環境や本番環境では `application-local.yml` を使用せず、`SPRING_DATASOURCE_URL`、`SPRING_DATASOURCE_USERNAME`、`SPRING_DATASOURCE_PASSWORD` を環境側から設定してください。
 
 ### 5.7 DB 初期構築SQL
 
@@ -495,10 +516,10 @@ npm run dev
 - PostgreSQL が起動していること
 - `sc query postgresql-x64-16` で `STATE` が `RUNNING` になっていること
 - `postgres` データベースへ接続できること
-- PostgreSQLの `postgres` ユーザーのパスワードが `postgres` であること
+- PostgreSQLの `postgres` ユーザーのパスワードと `application-local.yml` の `password` が一致していること
 - `management_app` スキーマが作成されていること
 - `backend/src/main/resources/sql/init` 配下のSQLを番号順に手動実行済みであること
-- `application.yml` の URL / ユーザー名 / パスワードと一致していること
+- `application-local.yml` の URL / ユーザー名 / パスワードが実際のPostgreSQL設定と一致していること
 - PostgreSQL のポートが `5432` で待ち受けていること
 
 ### `psql` が認識されない
