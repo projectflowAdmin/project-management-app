@@ -1,7 +1,7 @@
-﻿# 07 環境構築手順書
+﻿# 07 環境構築手順書（Windows版）
 
 作成日: 2026-07-04
-更新日: 2026-07-11
+更新日: 2026-08-02
 
 ## 1. 対象プロジェクト
 
@@ -115,7 +115,7 @@ code --install-extension vue.volar
 ```json
 {
   "java.compile.nullAnalysis.mode": "automatic",
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
 ```
 
@@ -133,6 +133,9 @@ VS Code の「実行とデバッグ」から `Backend: Spring Boot` または `P
 
 Spring Boot Dashboard のアプリ単体起動ボタンは、基本的にBackend単体の起動に使用します。
 Frontendも同時に起動したい場合は、上記の `ProjectFlow: Backend + Frontend` を使用してください。
+
+`.vscode/tasks.json` と `ProjectFlow.code-workspace` のFrontend起動タスクは、Windowsでは `npm.cmd run dev` を使用し、Windows以外では `npm run dev` を使用するOS別設定になっています。
+Task名、Background Taskの判定、Compound Launchの名称は維持しています。
 
 ## 5. Backend 環境構築
 
@@ -375,8 +378,11 @@ Node.js は 22 系が表示され、npm のバージョンも表示されれば�
 
 ```cmd
 cd frontend
-npm install
+npm ci
 ```
+
+このリポジトリには `frontend/package-lock.json` が含まれているため、初回構築やCIに近い確認では `npm ci` を使用します。
+依存関係を追加・更新する場合は、変更内容を確認したうえで `npm install` を使用してください。
 
 ### 6.4 Frontend 起動
 
@@ -420,14 +426,14 @@ http://localhost:5173
 Backend のテストを実行します。
 
 ```cmd
-cd project-management-app\backend
+cd backend
 mvn test
 ```
 
 Frontend のビルド確認を実行します。
 
 ```cmd
-cd project-management-app\frontend
+cd frontend
 npm run build
 ```
 
@@ -455,7 +461,7 @@ npm run build
 以下を確認してください。
 
 - Node.jsがインストールされていること
-- `npm install` を `frontend` ディレクトリで実行済みであること
+- `npm ci` を `frontend` ディレクトリで実行済みであること
 - `npm run dev` を使用して起動していること
 - 直接 `vite` コマンドを実行しないこと
 
@@ -543,3 +549,20 @@ projectmanagementapp:
 | `.vscode/settings.json` | VS Code の Java 関連設定 |
 | `.vscode/launch.json` | Backend / Frontend / 同時起動のVS Code起動設定 |
 | `.vscode/tasks.json` | Frontend 起動用のVS Codeタスク設定 |
+
+## 11. リポジトリ実態の確認結果
+
+2026-08-02時点のリポジトリでは、以下を確認済みです。
+
+| 項目 | 確認結果 |
+| --- | --- |
+| Java | `backend/pom.xml` の `java.version` は `21` |
+| Maven | Maven Wrapper は含まれていないため、Maven 3.9系の本体インストールが必要 |
+| Node.js | Node.js 22系を想定。`frontend/package.json` では `@types/node` 22系を使用 |
+| npm lockファイル | `frontend/package-lock.json` が存在するため、初回構築は `npm ci` を推奨 |
+| PostgreSQL | `application.yml` は `localhost:5432`、DB `postgres`、Schema `management_app` を既定値として使用 |
+| DB環境変数 | `DB_URL`、`DB_USERNAME`、`DB_PASSWORD` で上書き可能 |
+| `.env` | `launch.json` は `${workspaceFolder}/.env` を参照可能だが、リポジトリには `.env` は含まれていない |
+| Health API | `HealthController` により `GET /api/health` が `{"status":"UP"}` を返す |
+| CORS | `application.yml` で `http://localhost:5173` を許可 |
+| SQL自動実行 | `spring.sql.init.mode: never` のため自動実行しない |
