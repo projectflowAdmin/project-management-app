@@ -285,26 +285,16 @@ Backendの接続設定は `backend/src/main/resources/application.yml` に定義
 ```yaml
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 ```
 
-一時設定の例:
+このプロジェクトでは、DB接続先を `localhost:5432`、データベースを `postgres`、スキーマを `management_app` に固定しています。
 
-```zsh
-export DB_URL='jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app'
-export DB_USERNAME='postgres'
-export DB_PASSWORD='実際のPostgreSQLパスワード'
-```
-
-永続化する場合は `~/.zshrc` を使用します。
-ただし、パスワードをシェル設定ファイルへ平文保存するリスクがあります。
-実際のパスワードをGitHub、社内チャット、共有ドキュメントへ記載しないでください。
-
-`application.yml` の既定値では `DB_PASSWORD` 未指定時に `postgres` が使われます。
-ローカルDBのパスワードが異なる場合は、環境変数 `DB_PASSWORD` で実際のパスワードを指定してください。
+PostgreSQLの `postgres` ユーザーには、パスワード `postgres` を設定してください。
+Backendのユーザー名とパスワードも `application.yml` で `postgres` に固定しています。
 
 ## 10. DB初期構築SQL
 
@@ -412,11 +402,40 @@ http://localhost:8080/api/health
 ```
 
 このプロジェクトでは独自のHealth APIとして `/api/health` を使用します。
+その他に、Spring BootとDBの状態確認にはSpring Boot Actuatorの `/actuator/health` も利用できます。
 正常な場合は、以下のJSONが返ります。
 
 ```json
 {"status":"UP"}
 ```
+
+### 12.1 Talend API Testerの導入とAPI確認
+
+GET以外のメソッドやJSONリクエストボディを含むAPIの手動確認には、Chrome拡張機能の `Talend API Tester - Free Edition` を使用します。
+
+1. Chromeで以下のChromeウェブストアを開きます。
+   - [Talend API Tester - Free Edition](https://chromewebstore.google.com/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm)
+2. 「Chromeに追加」を押し、表示される権限を確認してインストールします。
+3. Chromeの拡張機能一覧から `Talend API Tester` を起動します。
+4. 以下のリクエストを設定して `Send` を押します。
+
+| 項目 | 設定値 |
+| --- | --- |
+| Method | `GET` |
+| URL | `http://localhost:8080/api/health` |
+| Request Body | なし |
+
+HTTPステータス `200 OK` と以下のJSONが返れば、独自Health APIの確認は完了です。
+
+```json
+{"status":"UP"}
+```
+
+URLは `/api/health` です。`/api/v1/health` ではないため、保存済みリクエストを再利用する場合もURLを確認してください。
+
+Talend API Testerは手動でのAPI動作確認用です。`mvn test` による自動テストの代わりにはなりません。
+
+> **注意:** ローカル開発用データのみを使用し、実際のパスワード、APIキー、顧客情報などは入力しないでください。利用前に所属組織のブラウザ拡張機能ポリシーも確認してください。
 
 ## 13. Frontend起動
 
@@ -544,7 +563,7 @@ Shell Command: Install 'code' command in PATH
 - `postgres` ロールが存在すること
 - `postgres` データベースが存在すること
 - パスワードが正しいこと
-- `DB_URL`、`DB_USERNAME`、`DB_PASSWORD` が `application.yml` と矛盾していないこと
+- `postgres` ユーザーのパスワードが `postgres` であること
 - 初期SQLを番号順に実行済みであること
 
 ### VS CodeからFrontendが起動しない
@@ -569,19 +588,3 @@ projectmanagementapp:
 ```
 
 Backendが起動していること、`http://localhost:8080/api/health` が `{"status":"UP"}` を返すことも確認してください。
-
-## 18. 参考ファイル
-
-| ファイル | 内容 |
-| --- | --- |
-| `backend/pom.xml` | BackendのJava / Spring Boot / Maven依存関係 |
-| `backend/src/main/resources/application.yml` | BackendのDB接続・ポート・CORS設定 |
-| `backend/src/main/resources/sql/README.md` | SQL管理ルール、採番ルール、実行方法 |
-| `backend/src/main/resources/sql/init` | 初期構築用SQL |
-| `backend/src/main/resources/sql/changes` | 追加変更用SQL |
-| `frontend/package.json` | Frontendの依存関係・npm scripts |
-| `frontend/package-lock.json` | Frontendのnpm依存関係ロックファイル |
-| `ProjectFlow.code-workspace` | VS Codeワークスペース設定 |
-| `.vscode/settings.json` | VS CodeのJava関連設定 |
-| `.vscode/launch.json` | Backend / Frontend / 同時起動のVS Code起動設定 |
-| `.vscode/tasks.json` | Frontend起動用のVS Codeタスク設定 |

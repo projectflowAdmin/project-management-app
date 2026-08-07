@@ -75,7 +75,8 @@ Git のバージョンが表示されれば問題ありません。
 
 ### 2.3 リポジトリの取得
 
-GitHubから `project-management-app` を取得します。
+GitHubから `project-management-app` を取得します。  
+あらかじめ、任意の作業フォルダを用意しておき、ディレクトリを移動しておくとよいです。
 
 ```cmd
 git clone https://github.com/projectflowAdmin/project-management-app.git
@@ -99,7 +100,8 @@ cd project-management-app
 | `vmware.vscode-boot-dev-pack` | Spring Boot 開発パック |
 | `vue.volar` | Vue / TypeScript サポート |
 
-別端末で同じ拡張機能を入れる場合は、コマンドプロンプトで以下を実行します。
+別端末で同じ拡張機能を入れる場合は、コマンドプロンプトで以下を実行します。  
+VSCodeの拡張機能アイコンから検索してインストールしても問題ありません。
 
 ```cmd
 code --install-extension ms-ceintl.vscode-language-pack-ja
@@ -119,23 +121,13 @@ code --install-extension vue.volar
 }
 ```
 
-Java プロジェクトの依存関係を変更した場合、VS Code 上で Java のビルド構成更新を求められたら許可してください。
-
-VS Codeで開発する場合は、リポジトリ内の `ProjectFlow.code-workspace` を開いてください。
-親フォルダを開くと、親フォルダ側の `.vscode/launch.json` が自動生成・参照される場合があります。
-
-`.vscode/launch.json` と `.vscode/tasks.json` には、Backend と Frontend を同時起動するための構成を用意しています。
-
-VS Code の「実行とデバッグ」から `Backend: Spring Boot` または `ProjectFlow: Backend + Frontend` を選択して開始すると、以下を同時に起動できます。
+VS Code の「実行とデバッグ」アイコンから `Backend: Spring Boot` または `ProjectFlow: Backend + Frontend` を選択して開始すると、以下を同時に起動できます。
 
 - Backend: Spring Boot
 - Frontend: `npm.cmd run dev`
 
 Spring Boot Dashboard のアプリ単体起動ボタンは、基本的にBackend単体の起動に使用します。
 Frontendも同時に起動したい場合は、上記の `ProjectFlow: Backend + Frontend` を使用してください。
-
-`.vscode/tasks.json` と `ProjectFlow.code-workspace` のFrontend起動タスクは、Windowsでは `npm.cmd run dev` を使用し、Windows以外では `npm run dev` を使用するOS別設定になっています。
-Task名、Background Taskの判定、Compound Launchの名称は維持しています。
 
 ## 5. Backend 環境構築
 
@@ -150,6 +142,11 @@ https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe
 ```
 
 インストール後、`JAVA_HOME` を JDK 21 のインストール先に設定し、`Path` に `%JAVA_HOME%\bin` を追加します。
+
+Windowsの検索で「環境変数」と入力すると「環境変数を編集」が表示されるため、そちらから環境変数設定画面を表示できます。  
+`Path`という変数定義が無ければ新たに作成し、存在する場合は選択した状態で編集を押してください。
+
+以下はJAVA_HOME用の変数にJDKのパス設定し、Path変数にJAVA_HOMEを参照させる設定にしている例です。
 
 例:
 
@@ -213,10 +210,8 @@ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 | Locale | Default locale |
 | Stack Builder | 必須ではないため未選択で可 |
 
-PostgreSQLインストール時に設定した `postgres` ユーザーのパスワードと、Backend起動時に使用する `DB_PASSWORD` は一致している必要があります。
-
-`application.yml` の既定値では `DB_PASSWORD` 未指定時に `postgres` が使われます。
-インストール時に別のパスワードを設定した場合は、環境変数 `DB_PASSWORD` で実際のパスワードを指定してください。
+PostgreSQLインストール時は、`postgres` ユーザーのパスワードに `postgres` を設定してください。
+Backendの `application.yml` でも、ユーザー名とパスワードに `postgres` を指定しています。
 
 ### 5.5 PostgreSQL サービスの起動確認
 
@@ -240,24 +235,13 @@ Backend の接続設定は `backend/src/main/resources/application.yml` に定�
 ```yaml
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=management_app
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 ```
 
-インストール時に `postgres` ユーザーのパスワードを `postgres` 以外にした場合は、Windowsの環境変数設定画面を使用するか、`setx` で `DB_PASSWORD` を設定してください。
-
-```cmd
-setx DB_PASSWORD "実際のPostgreSQLパスワード"
-```
-
-`setx` で設定した値は、新しく開いたコマンドプロンプトから有効になります。
-既に開いているコマンドプロンプトには反映されません。
-
-接続先やユーザー名も変更する場合は、必要に応じて `DB_URL` / `DB_USERNAME` もWindowsの環境変数として設定してください。
-
-パスワードを社内チャットやドキュメントへ貼り付けないでください。
+このプロジェクトでは、DB接続先を `localhost:5432`、データベースを `postgres`、スキーマを `management_app` に固定しています。
 
 ### 5.7 DB 初期構築SQL
 
@@ -339,13 +323,37 @@ http://localhost:8080/api/health
 ```
 
 このプロジェクトでは独自の Health API として `/api/health` を使用します。
-Spring Boot Actuator の `/actuator/health` は、Actuatorを導入している場合のみ利用できます。
+Spring BootとDBの状態確認には、Spring Boot Actuatorの `/actuator/health` も利用できます。
 
 正常な場合は、以下のようなJSONが返ります。
 
 ```json
 {"status":"UP"}
 ```
+
+### 5.9 Talend API Testerの導入とAPI確認
+
+GET以外のメソッドやJSONリクエストボディを含むAPIの手動確認には、Chrome拡張機能の `Talend API Tester - Free Edition` を使用します。
+
+1. Chromeで以下のChromeウェブストアを開きます。
+   - [Talend API Tester - Free Edition](https://chromewebstore.google.com/detail/talend-api-tester-free-ed/aejoelaoggembcahagimdiliamlcdmfm)
+2. 「Chromeに追加」を押し、表示される権限を確認してインストールします。
+3. Chromeの拡張機能一覧から `Talend API Tester` を起動します。
+4. 以下のリクエストを設定して `Send` を押します。
+
+| 項目 | 設定値 |
+| --- | --- |
+| Method | `GET` |
+| URL | `http://localhost:8080/api/health` |
+| Request Body | なし |
+
+HTTPステータス `200 OK` と以下のJSONが返れば、独自Health APIの確認は完了です。
+
+```json
+{"status":"UP"}
+```
+
+> **注意:** ローカル開発用データのみを使用し、実際のパスワード、APIキー、顧客情報などは入力しないでください。利用前に所属組織のブラウザ拡張機能ポリシーも確認してください。
 
 ## 6. Frontend 環境構築
 
@@ -414,12 +422,19 @@ http://localhost:5173
 
 1. PostgreSQL を起動する
 2. 初回構築時は `backend/src/main/resources/sql/init` 配下のSQLを `001` から番号順に手動実行する
-3. Backend 起動用のコマンドプロンプトを開く
-4. `project-management-app\backend` で `mvn spring-boot:run` を実行する
-5. `http://localhost:8080/api/health` で Backend を確認する
-6. Frontend 起動用の別コマンドプロンプトを開く
-7. `project-management-app\frontend` で `npm run dev` を実行する
-8. ブラウザで `http://localhost:5173` を開く
+3. 以下のどちらかの方法でBackendを起動する
+   - コマンドプロンプトで `project-management-app\backend` へ移動し、`mvn spring-boot:run` を実行する
+   - VS Codeの「JAVA PROJECTS」ビューで `project-management-app` にマウスカーソルを合わせ、表示される実行アイコン（▶）を押す
+4. `http://localhost:8080/api/health` で Backend を確認する
+5. Frontend 起動用の別コマンドプロンプトを開く
+6. `project-management-app\frontend` で `npm run dev` を実行する
+7. ブラウザで `http://localhost:5173` を開く
+
+VS Codeから起動する場合の実行アイコンは、以下の画像の赤枠部分です。
+
+![JAVA PROJECTSビューのBackend実行アイコン](images/backend-start-java-projects.png)
+
+VS Codeで起動する前に、リポジトリ内の `ProjectFlow.code-workspace` を開き、「JAVA PROJECTS」ビューに `project-management-app` が表示されていることを確認してください。どちらの方法で起動した場合も、ログに `Started ProjectFlowApplication` が表示された後にHealth APIを確認します。
 
 ## 8. ビルド・テスト
 
@@ -480,12 +495,10 @@ npm run dev
 - PostgreSQL が起動していること
 - `sc query postgresql-x64-16` で `STATE` が `RUNNING` になっていること
 - `postgres` データベースへ接続できること
-- PostgreSQLインストール時に設定したパスワードと `DB_PASSWORD` が一致していること
-- `setx` で環境変数を設定した場合は、新しいコマンドプロンプトを開き直していること
+- PostgreSQLの `postgres` ユーザーのパスワードが `postgres` であること
 - `management_app` スキーマが作成されていること
 - `backend/src/main/resources/sql/init` 配下のSQLを番号順に手動実行済みであること
 - `application.yml` の URL / ユーザー名 / パスワードと一致していること
-- 必要ならWindowsの環境変数で `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` を上書きしていること
 - PostgreSQL のポートが `5432` で待ち受けていること
 
 ### `psql` が認識されない
@@ -534,35 +547,3 @@ projectmanagementapp:
     allowed-origins:
       - http://localhost:5173
 ```
-
-## 10. 参考ファイル
-
-| ファイル | 内容 |
-| --- | --- |
-| `backend/pom.xml` | Backend の Java / Spring Boot / Maven 依存関係 |
-| `backend/src/main/resources/application.yml` | Backend の DB 接続・ポート・CORS 設定 |
-| `backend/src/main/resources/sql/README.md` | SQL管理ルール、採番ルール、実行方法 |
-| `backend/src/main/resources/sql/init` | 初期構築用SQL |
-| `backend/src/main/resources/sql/changes` | 追加変更用SQL |
-| `frontend/package.json` | Frontend の依存関係・npm scripts |
-| `ProjectFlow.code-workspace` | VS Code ワークスペース設定 |
-| `.vscode/settings.json` | VS Code の Java 関連設定 |
-| `.vscode/launch.json` | Backend / Frontend / 同時起動のVS Code起動設定 |
-| `.vscode/tasks.json` | Frontend 起動用のVS Codeタスク設定 |
-
-## 11. リポジトリ実態の確認結果
-
-2026-08-02時点のリポジトリでは、以下を確認済みです。
-
-| 項目 | 確認結果 |
-| --- | --- |
-| Java | `backend/pom.xml` の `java.version` は `21` |
-| Maven | Maven Wrapper は含まれていないため、Maven 3.9系の本体インストールが必要 |
-| Node.js | Node.js 22系を想定。`frontend/package.json` では `@types/node` 22系を使用 |
-| npm lockファイル | `frontend/package-lock.json` が存在するため、初回構築は `npm ci` を推奨 |
-| PostgreSQL | `application.yml` は `localhost:5432`、DB `postgres`、Schema `management_app` を既定値として使用 |
-| DB環境変数 | `DB_URL`、`DB_USERNAME`、`DB_PASSWORD` で上書き可能 |
-| `.env` | `launch.json` は `${workspaceFolder}/.env` を参照可能だが、リポジトリには `.env` は含まれていない |
-| Health API | `HealthController` により `GET /api/health` が `{"status":"UP"}` を返す |
-| CORS | `application.yml` で `http://localhost:5173` を許可 |
-| SQL自動実行 | `spring.sql.init.mode: never` のため自動実行しない |
