@@ -554,6 +554,8 @@ cd backend
 mvn test
 ```
 
+Backendの自動テストでも `application-local.yml` のローカルPostgreSQL設定を使用します。テスト専用DBの構築は行いません。今後RepositoryやMapperのテストを追加する場合は、テストごとに必要なデータを作成し、テスト後に後片付けを行ってください。
+
 Frontendのビルド確認を実行します。
 
 ```zsh
