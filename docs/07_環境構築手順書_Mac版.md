@@ -139,28 +139,51 @@ code ProjectFlow.code-workspace
 
 ## 6. Java 21環境
 
-Homebrewを利用してJDK 21を導入する例です。
+JDK 21は、macOS用インストーラーでの導入を推奨します。Homebrewでも導入できますが、macOSからJDKを認識できるように追加設定が必要です。
+
+### 6.1 macOS用インストーラーで導入する場合（推奨）
+
+Oracle JDKやEclipse Temurinなど、信頼できるJDKディストリビューションのmacOS用インストーラーを使用してJDK 21をインストールします。
+
+- [Oracle JDK 21ダウンロード](https://www.oracle.com/java/technologies/downloads/#java21)
+- [Eclipse Temurin 21ダウンロード](https://adoptium.net/temurin/releases/?version=21)
+
+MacのCPUに合わせてインストーラーを選択します。
+
+| Mac | 選択するアーキテクチャ |
+| --- | --- |
+| Apple Silicon（M1 / M2 / M3 / M4など） | Arm 64 / AArch64 |
+| Intel Mac | x64 / x86_64 |
+
+ダウンロードした `.dmg` または `.pkg` を開き、インストーラーの案内に従ってインストールしてください。この方法では、Homebrew用のシンボリックリンク作成は不要です。
+
+インストール後、「6.3 `JAVA_HOME` とPATHの設定」へ進みます。
+
+### 6.2 Homebrewで導入する場合（任意）
+
+HomebrewでJDK 21をインストールします。
 
 ```zsh
 brew install openjdk@21
 ```
 
-インストール後は、Homebrewが表示する案内を確認してください。
-Javaのバージョンとインストール済みJDKを確認します。
+HomebrewでインストールしたJDKは、macOSがJDKを検索する場所へ自動登録されません。`/usr/libexec/java_home` からJDK 21を検出できるように、以下のシンボリックリンクを作成します。
 
 ```zsh
-java -version
+sudo ln -sfn "$(brew --prefix openjdk@21)/libexec/openjdk.jdk" /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+```
+
+作成後、「6.3 `JAVA_HOME` とPATHの設定」へ進みます。
+
+### 6.3 `JAVA_HOME` とPATHの設定
+
+はじめに、macOSがJDK 21を検出できることを確認します。一覧にバージョン21のJDKが表示されることを確認してください。
+
+```zsh
 /usr/libexec/java_home -V
 ```
 
-`JAVA_HOME` の設定例:
-
-```zsh
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
-export PATH="$JAVA_HOME/bin:$PATH"
-```
-
-永続化する場合は `~/.zshrc` へ追加します。
+次に、`JAVA_HOME` とPATHを `~/.zshrc` へ追加します。既に同じ設定が `~/.zshrc` に存在する場合は、重複する行の `echo` は実行しないでください。
 
 ```zsh
 echo 'export JAVA_HOME=$(/usr/libexec/java_home -v 21)' >> ~/.zshrc
@@ -168,8 +191,14 @@ echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-既に同じ設定が `~/.zshrc` に存在する場合は、重複追加しないでください。
-Apple SiliconとIntel Macで固定の絶対パスを前提にしすぎず、`/usr/libexec/java_home -V` の結果を確認してください。
+設定反映後に、JDK 21が使用されていることを確認します。
+
+```zsh
+echo "$JAVA_HOME"
+java -version
+```
+
+`java -version` にバージョン21が表示されれば設定完了です。
 
 ## 7. Maven 3.9系環境
 
@@ -361,18 +390,27 @@ HomebrewでNode.js 22系を導入する例です。
 brew install node@22
 ```
 
-PATH設定が必要な場合は、以下の案内を確認してください。
+Homebrewでインストールした `node@22` は、通常のPATHへ自動追加されません。はじめにHomebrewの案内を確認します。
 
 ```zsh
 brew info node@22
 ```
 
-確認:
+次に、`node@22` の `bin` ディレクトリをPATHに追加し、設定を反映します。既に同じPATH設定が `~/.zshrc` に存在する場合は、`echo` は実行しないでください。
+
+```zsh
+echo 'export PATH="$(brew --prefix node@22)/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+設定反映後に、Node.jsとnpmのバージョンを確認します。
 
 ```zsh
 node -v
 npm -v
 ```
+
+`node -v` にバージョン22が表示されれば設定完了です。
 
 依存関係をインストールします。
 
