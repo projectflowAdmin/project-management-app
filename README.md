@@ -4,8 +4,6 @@
 
 ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツールを参考にした学習用Webアプリケーションです。
 
-2〜5年目程度のエンジニアが、要件定義、GitHub Issue作成、実装、Pull Request、レビュー、docs更新、リリースに近い流れを疑似プロジェクトとして経験できるように設計しています。
-
 名称・画面構成・文言・配色は独自化し、特定サービスの完全コピーにはしません。
 
 このリポジトリでは、GitHub Issues、Pull Request、レビュー、docs更新、Difyを使って追加開発を進めます。社内情報、顧客情報、個人情報、機密情報は扱いません。
@@ -16,7 +14,8 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 
 | 目的 | 参照先 |
 |---|---|
-| 環境構築 | [docs/07_環境構築手順書.md](docs/07_環境構築手順書.md) |
+| 環境構築（Windows） | [docs/07_環境構築手順書_Windows版.md](docs/07_環境構築手順書_Windows版.md) |
+| 環境構築（Mac） | [docs/07_環境構築手順書_Mac版.md](docs/07_環境構築手順書_Mac版.md) |
 | 現在の仕様 | [docs/01_システム仕様書.md](docs/01_システム仕様書.md) |
 | 開発ルール | [docs/05_開発ルール.md](docs/05_開発ルール.md) |
 | ドキュメント更新方法 | [docs/08_ドキュメント更新ルール.md](docs/08_ドキュメント更新ルール.md) |
@@ -27,7 +26,7 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 1. GitHubアカウントを用意する。
 2. GitHub Organizationへの招待を受ける。
 3. リポジトリをcloneする。
-4. [docs/07_環境構築手順書.md](docs/07_環境構築手順書.md) を参照して環境構築する。
+4. 使用するOSに応じて [Windows版](docs/07_環境構築手順書_Windows版.md) または [Mac版](docs/07_環境構築手順書_Mac版.md) を参照して環境構築する。
 5. ローカルでFrontendとBackendの起動確認をする。
 6. [docs/01_システム仕様書.md](docs/01_システム仕様書.md) で現在の機能を確認する。
 7. [docs/05_開発ルール.md](docs/05_開発ルール.md) を確認する。
@@ -104,7 +103,10 @@ Issue作成前は、システム仕様書を毎回変更するのではなく、
 
 ## 5. 初回セットアップ
 
-詳細手順は [docs/07_環境構築手順書.md](docs/07_環境構築手順書.md) を参照してください。READMEでは概要だけを示します。
+詳細手順は、使用するOSに応じて以下を参照してください。READMEでは概要だけを示します。
+
+- [Windows版](docs/07_環境構築手順書_Windows版.md)
+- [Mac版](docs/07_環境構築手順書_Mac版.md)
 
 1. GitHubからリポジトリをcloneする。
 2. Java、Maven、Node.js、PostgreSQLなど必要ソフトウェアをインストールする。
@@ -118,7 +120,8 @@ Issue作成前は、システム仕様書を毎回変更するのではなく、
 
 既存Issueを担当する場合は、背景、対応内容、受入条件、テスト観点を確認します。
 
-新規Issueを作成する場合は [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) を使用します。システム仕様書へIssueの詳細を直接書き込まないでください。
+新規Issueを作成する場合は [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) を使用します。システム仕様書へIssueの詳細を直接書き込まないでください。　　
+※GitHub Issue作成時に選択できるようになってます。
 
 ### 6.2 担当とブランチを決める
 
@@ -187,17 +190,19 @@ VS Codeでは、リポジトリ内の `ProjectFlow.code-workspace` を開いて�
 
 VS Code の「実行とデバッグ」で `Backend: Spring Boot` または `ProjectFlow: Backend + Frontend` を選択して開始すると、Backend と Frontend を同時に起動できます。
 
-WindowsのPowerShell実行ポリシーに引っかからないよう、VS Codeタスクでは `npm.cmd run dev` を使用します。この設定は `ProjectFlow.code-workspace`、`.vscode/launch.json`、`.vscode/tasks.json` で管理しています。
+VS Codeタスクでは、Windowsでは `npm.cmd run dev`、Macでは `npm run dev` を使用するOS別設定にしています。この設定は `ProjectFlow.code-workspace`、`.vscode/launch.json`、`.vscode/tasks.json` で管理しています。
 
 ### 8.2 Frontendを個別起動
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-PowerShell の実行ポリシーで `npm` が失敗する場合は、以下を使用してください。
+依存関係を追加・更新する場合は、変更内容を確認したうえで `npm install` を使用してください。
+
+WindowsのPowerShell実行ポリシーで `npm` が失敗する場合は、以下を使用してください。
 
 ```bash
 npm.cmd install
@@ -215,13 +220,6 @@ npm.cmd run dev
 ```bash
 cd backend
 mvn spring-boot:run
-```
-
-Maven Wrapper を追加した場合は以下でも起動できます。
-
-```bash
-cd backend
-./mvnw spring-boot:run
 ```
 
 デフォルトでは `http://localhost:8080` で起動します。
@@ -272,7 +270,8 @@ project-management-app/
 │  ├─ 04_DB設計.md
 │  ├─ 05_開発ルール.md
 │  ├─ 06_レビュー観点.md
-│  ├─ 07_環境構築手順書.md
+│  ├─ 07_環境構築手順書_Windows版.md
+│  ├─ 07_環境構築手順書_Mac版.md
 │  └─ 08_ドキュメント更新ルール.md
 ├─ frontend/
 ├─ backend/
@@ -293,7 +292,8 @@ project-management-app/
 | [docs/04_DB設計.md](docs/04_DB設計.md) | DB構成と変更ルール |
 | [docs/05_開発ルール.md](docs/05_開発ルール.md) | 実装・開発ルール |
 | [docs/06_レビュー観点.md](docs/06_レビュー観点.md) | レビュー時の確認基準 |
-| [docs/07_環境構築手順書.md](docs/07_環境構築手順書.md) | 初回環境構築と起動方法 |
+| [docs/07_環境構築手順書_Windows版.md](docs/07_環境構築手順書_Windows版.md) | Windows向けの初回環境構築と起動方法 |
+| [docs/07_環境構築手順書_Mac版.md](docs/07_環境構築手順書_Mac版.md) | Mac向けの初回環境構築と起動方法 |
 | [docs/08_ドキュメント更新ルール.md](docs/08_ドキュメント更新ルール.md) | 仕様変更時のdocs更新方法 |
 
 ## 12. 開発上の注意事項
