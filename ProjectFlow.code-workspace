@@ -27,7 +27,10 @@
         "name": "Frontend: npm run dev",
         "request": "launch",
         "cwd": "${workspaceFolder}/frontend",
-        "command": "npm.cmd run dev"
+        "command": "npm run dev",
+        "windows": {
+          "command": "npm.cmd run dev"
+        }
       }
     ],
     "compounds": [
@@ -46,7 +49,10 @@
       {
         "label": "Frontend: npm run dev",
         "type": "shell",
-        "command": "npm.cmd run dev",
+        "command": "npm run dev",
+        "windows": {
+          "command": "npm.cmd run dev"
+        },
         "options": {
           "cwd": "${workspaceFolder}/frontend"
         },
