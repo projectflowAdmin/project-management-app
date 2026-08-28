@@ -27,3 +27,6 @@ backend/.mvn/wrapper/maven-wrapper.jar
 .env
 .env.local
 .env.*
+
+# Local Spring Boot configuration
+backend/src/main/resources/application-local.yml
