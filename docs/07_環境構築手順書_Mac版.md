@@ -15,7 +15,6 @@ project-management-app/
 ```
 
 以降のコマンドは、macOS標準シェルのzshを前提に、ターミナルで実行します。
-Dockerは使用しません。
 
 Apple Silicon MacとIntel Macでは、一部のHomebrew配置先が異なります。
 代表例は以下です。
@@ -55,7 +54,7 @@ https://brew.sh/
 
 Homebrewのインストールコマンドを記載・実行する場合は、公式サイトに掲載された最新のコマンドを確認してください。
 
-Apple Siliconで `brew` が認識されない場合は、Homebrewの案内に従ってPATHを設定します。
+Apple Siliconで `brew` が認識されない場合は、Homebrewの案内に従ってPATHを設定します。  
 例:
 
 ```zsh
@@ -68,21 +67,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 ## 4. Gitの確認とリポジトリ取得
 
-Gitが利用できるか確認します。
-
-```zsh
-git --version
-```
-
-Gitが利用できない場合は、Xcode Command Line ToolsまたはHomebrew経由のGitを導入してください。
-
-Xcode Command Line Toolsの導入例:
-
-```zsh
-xcode-select --install
-```
-
-Homebrew経由で導入する例:
+Homebrew経由でGitをインストールしてください。
 
 ```zsh
 brew install git
@@ -118,7 +103,7 @@ https://code.visualstudio.com/download
 | `vmware.vscode-boot-dev-pack` | Spring Boot開発パック |
 | `vue.volar` | Vue / TypeScriptサポート |
 
-ターミナルから `code` コマンドを使用する場合は、VS Codeのコマンドパレットから以下を実行します。
+（任意）ターミナルから `code` コマンドを使用する場合は、VS Codeのコマンドパレットから以下を実行します。
 
 ```text
 Shell Command: Install 'code' command in PATH
@@ -128,13 +113,6 @@ Shell Command: Install 'code' command in PATH
 
 ```zsh
 code --version
-```
-
-VS Codeで開発する場合は、リポジトリ内の `ProjectFlow.code-workspace` を開いてください。
-親フォルダを開くと、親フォルダ側の `.vscode/launch.json` が自動生成・参照される場合があります。
-
-```zsh
-code ProjectFlow.code-workspace
 ```
 
 ## 6. Java 21環境
@@ -346,7 +324,6 @@ spring:
 
 ## 10. DB初期構築SQL
 
-このプロジェクトでは、Backend起動時にSQLは自動実行しません。
 初回構築時は、Backend起動前に `backend/src/main/resources/sql/init` 配下のSQLを `001` から番号順に手動実行してください。
 
 ```yaml
@@ -355,8 +332,6 @@ spring:
     init:
       mode: never
 ```
-
-Flyway / Liquibase / 独自Java migration runner は使用しません。
 
 リポジトリのルートディレクトリで以下を実行します。
 
@@ -438,10 +413,9 @@ cd frontend
 npm ci
 ```
 
-このリポジトリには `frontend/package-lock.json` が含まれているため、初回構築やCIに近い確認では `npm ci` を使用します。
+このリポジトリには `frontend/package-lock.json` が含まれているため、`frontend/package-lock.json`の依存関係に合わせたインストールになるように `npm ci` を使用します。
 依存関係を追加・更新する場合は、変更内容を確認したうえで `npm install` を使用してください。
 
-Macでは `npm.cmd` を使用しません。
 
 ## 12. Backend起動
 
@@ -452,14 +426,12 @@ cd backend
 mvn spring-boot:run
 ```
 
-別のターミナルまたはブラウザで以下にアクセスして確認します。
+別のターミナルなどで以下Curlコマンドを確認します。
 
-```text
-http://localhost:8080/api/health
+```
+curl -i http://localhost:8080/api/health
 ```
 
-このプロジェクトでは独自のHealth APIとして `/api/health` を使用します。
-その他に、Spring BootとDBの状態確認にはSpring Boot Actuatorの `/actuator/health` も利用できます。
 正常な場合は、以下のJSONが返ります。
 
 ```json
@@ -490,7 +462,6 @@ HTTPステータス `200 OK` と以下のJSONが返れば、独自Health APIの�
 
 URLは `/api/health` です。`/api/v1/health` ではないため、保存済みリクエストを再利用する場合もURLを確認してください。
 
-Talend API Testerは手動でのAPI動作確認用です。`mvn test` による自動テストの代わりにはなりません。
 
 > **注意:** ローカル開発用データのみを使用し、実際のパスワード、APIキー、顧客情報などは入力しないでください。利用前に所属組織のブラウザ拡張機能ポリシーも確認してください。
 
@@ -521,29 +492,32 @@ http://localhost:5173
 
 ## 14. VS Codeからの同時起動
 
-`.vscode/launch.json`、`.vscode/tasks.json`、`ProjectFlow.code-workspace` には、BackendとFrontendを同時起動するための構成を用意しています。
+VS Code の「実行とデバッグ」アイコンから `Backend: Spring Boot`  
+または `ProjectFlow: Backend + Frontend` を選択して開始すると、以下を同時に起動できます。
 
-VS Codeの「実行とデバッグ」から `ProjectFlow: Backend + Frontend` を選択すると、以下を同時に起動できます。
+![実行とデバッグ](images/backend-start-java-projects_2.png)
 
-- Backend: Spring Boot
-- Frontend: `npm run dev`
-
-Frontend起動タスクは、Windowsでは `npm.cmd run dev` を使用し、Macでは `npm run dev` を使用するOS別設定になっています。
-既存のTask名、problemMatcher、Background Taskの判定、Compound Launch、Backend起動設定は維持しています。
-
-Spring Boot Dashboardのアプリ単体起動ボタンは、基本的にBackend単体の起動に使用します。
-Frontendも同時に起動したい場合は、`ProjectFlow: Backend + Frontend` を使用してください。
+### (注意!!)  
+- フロントエンドを単体で動かしたい場合は上記の設定を「Backend:Spring Boot」のみとして、フロントエンドの起動は `npm run dev`を利用してください。  
 
 ## 15. 起動順序
 
 ローカルで動作確認する場合は、以下の順序で起動します。
 
-1. PostgreSQLを起動する
-2. 初回構築時はDB初期構築SQLを番号順に実行する
-3. Backendを起動する
-4. `http://localhost:8080/api/health` を確認する
-5. Frontendを起動する
-6. `http://localhost:5173` を確認する
+1. PostgreSQL を起動する
+2. 初回構築時は `backend/src/main/resources/sql/init` 配下のSQLを `001` から番号順に手動実行する
+3. 以下のどちらかの方法でBackendを起動する
+   - コマンドプロンプトで `project-management-app\backend` へ移動し、`mvn spring-boot:run` を実行する
+   - VS Codeの「JAVA PROJECTS」ビューで `project-management-app` にマウスカーソルを合わせ、表示される実行アイコン（▶）を押す
+4. `http://localhost:8080/api/health` で Backend を確認する
+5. Frontend 起動用の別コマンドプロンプトを開く
+6. `project-management-app\frontend` で `npm run dev` を実行する
+7. ブラウザで `http://localhost:5173` を開く
+
+VS Codeから起動する場合の実行アイコンは、以下の画像の赤枠部分です。
+
+![JAVA PROJECTSビューのBackend実行アイコン](images/backend-start-java-projects.png)
+
 
 ## 16. ビルド・テスト
 

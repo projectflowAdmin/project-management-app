@@ -1,11 +1,11 @@
 ﻿# 07 環境構築手順書（Windows版）
 
 作成日: 2026-07-04
-更新日: 2026-08-02
+更新日: 2026-08-28
 
 ## 1. 対象プロジェクト
 
-この手順書は、Windows の社用PCで `project-management-app` を初回構築し、ローカル環境で開発・起動確認するための手順です。
+この手順書は、WindowsPCで `project-management-app` を初回構築し、ローカル環境で開発・起動確認するための手順です。
 
 ```text
 project-management-app/
@@ -60,7 +60,7 @@ code --version
 Git for Windows が未インストールの場合は、以下のページからインストーラーをダウンロードして実行します。
 
 ```text
-https://gitforwindows.org/
+https://git-scm.com/install/windows
 ```
 
 インストール中に確認メッセージが表示された場合は、内容を確認して続行します。特に変更が不要な場合は、既定値のままインストールします。
@@ -112,22 +112,13 @@ code --install-extension vue.volar
 
 ## 4. VS Code ワークスペース設定
 
-現在の `.vscode/settings.json` には以下が設定されています。
+VS Code の「実行とデバッグ」アイコンから `Backend: Spring Boot`  
+または `ProjectFlow: Backend + Frontend` を選択して開始すると、以下を同時に起動できます。
 
-```json
-{
-  "java.compile.nullAnalysis.mode": "automatic",
-  "java.configuration.updateBuildConfiguration": "automatic"
-}
-```
+![実行とデバッグ](images/backend-start-java-projects_2.png)
 
-VS Code の「実行とデバッグ」アイコンから `Backend: Spring Boot` または `ProjectFlow: Backend + Frontend` を選択して開始すると、以下を同時に起動できます。
-
-- Backend: Spring Boot
-- Frontend: `npm.cmd run dev`
-
-Spring Boot Dashboard のアプリ単体起動ボタンは、基本的にBackend単体の起動に使用します。
-Frontendも同時に起動したい場合は、上記の `ProjectFlow: Backend + Frontend` を使用してください。
+### (注意!!)  
+- フロントエンドを単体で動かしたい場合は上記の設定を「Backend:Spring Boot」のみとして、フロントエンドの起動は`npm.cmd run dev`もしくは `npm run dev`を利用してください。  
 
 ## 5. Backend 環境構築
 
@@ -165,10 +156,10 @@ Maven が未インストールの場合は、Apache Maven 3.9.16 の binary zip 
 https://dlcdn.apache.org/maven/maven-3/3.9.16/binaries/apache-maven-3.9.16-bin.zip
 ```
 
-参照元:
+ダウンロードできない場合は以下のサイトから「Downloads」を押下し進めてください。
 
 ```text
-https://maven.apache.org/download.cgi
+https://maven.apache.org/
 ```
 
 展開後、Maven の配置先を `MAVEN_HOME` に設定し、`Path` に `%MAVEN_HOME%\bin` を追加します。
@@ -195,7 +186,7 @@ Java は 21 系、Maven は 3.9 系が表示されれば問題ありません。
 
 ### 5.4 PostgreSQL 16.14 のインストール
 
-PostgreSQL が未インストールの場合は、以下の EnterpriseDB のダウンロードページを開き、Windows 用の PostgreSQL `16.14` を選択してインストールします。
+PostgreSQL が未インストールの場合は、以下の EnterpriseDB のダウンロードページを開き、Windows 用の PostgreSQL `16.15` を選択してインストールします。(バージョンが進んでいる場合は16系を選択してください。)
 
 ```text
 https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
@@ -205,7 +196,7 @@ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 
 | 項目 | 設定 |
 | --- | --- |
-| Version | 16.14 |
+| Version | 16.15 |
 | Port | 5432 |
 | Locale | Default locale |
 | Stack Builder | 必須ではないため未選択で可 |
@@ -266,7 +257,6 @@ spring:
 
 ### 5.7 DB 初期構築SQL
 
-このプロジェクトでは、Backend起動時にSQLは自動実行しません。
 初回構築時は、Backend起動前に `backend/src/main/resources/sql/init` 配下のSQLを `001` から番号順に手動実行してください。
 
 ```yaml
@@ -275,8 +265,6 @@ spring:
     init:
       mode: never
 ```
-
-Flyway / Liquibase / 独自Java migration runner は使用しません。
 
 `init` 配下のSQLは新規環境の初期構築用です。
 既存環境では、内容と影響を確認せずに安易に再実行しないでください。
@@ -337,14 +325,11 @@ cd backend
 mvn spring-boot:run
 ```
 
-別のコマンドプロンプトまたはブラウザで以下にアクセスして確認します。
+別のコマンドプロンプトなどで以下Curlコマンドを確認します。
 
-```text
-http://localhost:8080/api/health
 ```
-
-このプロジェクトでは独自の Health API として `/api/health` を使用します。
-Spring BootとDBの状態確認には、Spring Boot Actuatorの `/actuator/health` も利用できます。
+curl -i http://localhost:8080/api/health
+```
 
 正常な場合は、以下のようなJSONが返ります。
 
@@ -410,7 +395,7 @@ cd frontend
 npm ci
 ```
 
-このリポジトリには `frontend/package-lock.json` が含まれているため、初回構築やCIに近い確認では `npm ci` を使用します。
+このリポジトリには `frontend/package-lock.json` が含まれているため、`frontend/package-lock.json`の依存関係に合わせたインストールになるように `npm ci` を使用します。
 依存関係を追加・更新する場合は、変更内容を確認したうえで `npm install` を使用してください。
 
 ### 6.4 Frontend 起動
@@ -455,7 +440,6 @@ VS Codeから起動する場合の実行アイコンは、以下の画像の赤�
 
 ![JAVA PROJECTSビューのBackend実行アイコン](images/backend-start-java-projects.png)
 
-VS Codeで起動する前に、リポジトリ内の `ProjectFlow.code-workspace` を開き、「JAVA PROJECTS」ビューに `project-management-app` が表示されていることを確認してください。どちらの方法で起動した場合も、ログに `Started ProjectFlowApplication` が表示された後にHealth APIを確認します。
 
 ## 8. ビルド・テスト
 
