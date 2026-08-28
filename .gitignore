@@ -30,4 +30,3 @@ backend/.mvn/wrapper/maven-wrapper.jar
 
 # Local Spring Boot configuration
 backend/src/main/resources/application-local.yml
-
