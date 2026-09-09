@@ -6,7 +6,7 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 
 名称・画面構成・文言・配色は独自化し、特定サービスの完全コピーにはしません。
 
-このリポジトリでは、GitHub Issues、Pull Request、レビュー、docs更新、Difyを使って追加開発を進めます。社内情報、顧客情報、個人情報、機密情報は扱いません。
+このリポジトリでは、GitHub Issues、Pull Request、レビュー、docs更新、CHASSU(CRE8)を使って追加開発を進めます。社内情報、顧客情報、個人情報、機密情報は扱いません。
 
 ## 2. 初めて参加する方へ
 
@@ -25,13 +25,12 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 
 1. GitHubアカウントを用意する。
 2. GitHub Organizationへの招待を受ける。
-3. リポジトリをcloneする。
-4. 使用するOSに応じて [Windows版](docs/07_環境構築手順書_Windows版.md) または [Mac版](docs/07_環境構築手順書_Mac版.md) を参照して環境構築する。
-5. ローカルでFrontendとBackendの起動確認をする。
-6. [docs/01_システム仕様書.md](docs/01_システム仕様書.md) で現在の機能を確認する。
-7. [docs/05_開発ルール.md](docs/05_開発ルール.md) を確認する。
-8. 担当Issueを確認する。
-9. ブランチを作成して実装を開始する。
+3. 使用するOSに応じて [Windows版](docs/07_環境構築手順書_Windows版.md) または [Mac版](docs/07_環境構築手順書_Mac版.md) を参照して環境構築する。
+4. ローカルでFrontendとBackendの起動確認をする。
+5. [docs/01_システム仕様書.md](docs/01_システム仕様書.md) で現在の機能を確認する。
+6. [docs/05_開発ルール.md](docs/05_開発ルール.md) を確認する。
+7. 担当Issueを確認する。
+8. ブランチを作成して実装を開始する。
 
 ## 3. 役割
 
@@ -50,8 +49,8 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 ### 3.2 リーダー
 
 - [docs/01_システム仕様書.md](docs/01_システム仕様書.md) で現在の状態を確認する。
-- 必要に応じてDifyから追加Issue案を作成する。
-- Dify出力をそのまま採用せず、妥当性と粒度を確認する。
+- 必要に応じてCHASSU(CRE8)から追加Issue案を作成する。
+- CHASSU(CRE8)出力をそのまま採用せず、妥当性と粒度を確認する。
 - GitHub Issueを作成・整理する。
 - 担当者を決める。
 - 仕様上の不明点を解消する。
@@ -72,7 +71,7 @@ ProjectFlow は、Backlog や Jira のようなプロジェクト管理ツール
 ```text
 現在のシステム仕様を確認
         ↓
-Difyで追加機能案を生成（必要な場合）
+CHASSU(CRE8)で追加機能案を生成（必要な場合）
         ↓
 リーダーが内容を確認
         ↓
@@ -168,11 +167,11 @@ docs更新対象は [docs/08_ドキュメント更新ルール.md](docs/08_ド�
 - マージ後にIssueを完了状態へする。
 - [docs/01_システム仕様書.md](docs/01_システム仕様書.md) が現在状態を表しているか確認する。
 
-## 7. Difyを使った追加Issue作成
+## 7. CHASSU(CRE8)を使った追加Issue作成
 
-Difyで追加開発Issue案を作成する場合は、[docs/01_システム仕様書.md](docs/01_システム仕様書.md) を入力します。
+CHASSU(CRE8)で追加開発Issue案を作成する場合は、[docs/01_システム仕様書.md](docs/01_システム仕様書.md) を入力します。
 
-Difyは現在実装済みの機能と追加開発候補をもとに、追加機能案を生成します。出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
+CHASSU(CRE8)は現在実装済みの機能と追加開発候補をもとに、追加機能案を生成します。出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
 
 - 実装済み機能と重複していないか。
 - ProjectFlowの目的・技術構成・学習用途から逸脱していないか。
@@ -180,7 +179,7 @@ Difyは現在実装済みの機能と追加開発候補をもとに、追加機�
 - 複数Issueに分割すべき大きさではないか。
 - [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) の形式に整理できているか。
 
-DifyのURLはREADMEへ直接固定記載せず、管理者から共有します。Difyへ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
+CHASSU(CRE8)のURLはREADMEへ直接固定記載せず、管理者から共有します。CHASSU(CRE8)へ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
 
 ## 8. ローカル起動
 
@@ -247,7 +246,7 @@ Spring Boot の DB 接続設定は `backend/src/main/resources/application.yml` 
 | DBアクセス | MyBatis |
 | SQL管理 | Mapper XML、`backend/src/main/resources/sql/init`、`backend/src/main/resources/sql/changes` |
 | タスク管理 | GitHub Issues / GitHub Projects |
-| AI支援 | Dify |
+| AI支援 | CHASSU(CRE8) |
 
 ## 10. ディレクトリ構成
 
