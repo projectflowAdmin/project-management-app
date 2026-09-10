@@ -1,7 +1,7 @@
 ---
 name: 機能追加
 about: ProjectFlowへ新しい機能や仕様変更を追加するためのテンプレート
-title: "[Feature] "
+title: "[フロントエンド/バックエンド] "
 labels: ["enhancement"]
 assignees: ""
 ---
