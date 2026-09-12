@@ -1,0 +1,53 @@
+name: Generate Dify Context
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - "dify/projectflow-dify-context.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-dify-context-develop
+  cancel-in-progress: true
+
+jobs:
+  generate-context:
+    name: Generate implementation context
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Create Dify directory
+        run: mkdir -p dify
+
+      - name: Generate Dify context with Repomix
+        run: npx --yes repomix@1.18.0 --config repomix.config.json
+
+      - name: Commit and push updated Dify context
+        run: |
+          git add -- dify/projectflow-dify-context.md
+
+          if git diff --cached --quiet; then
+            echo "Dify context is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update Dify context"
+          git push origin HEAD:develop

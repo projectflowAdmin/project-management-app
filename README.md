@@ -167,11 +167,20 @@ docs更新対象は [docs/08_ドキュメント更新ルール.md](docs/08_ド�
 - マージ後にIssueを完了状態へする。
 - [docs/01_システム仕様書.md](docs/01_システム仕様書.md) が現在状態を表しているか確認する。
 
-## 7. CHASSU(CRE8)を使った追加Issue作成
+## 7. Dify用実装コンテキスト
 
-CHASSU(CRE8)で追加開発Issue案を作成する場合は、[docs/01_システム仕様書.md](docs/01_システム仕様書.md) を入力します。
+`develop` ブランチでは、社内Difyによる追加開発Issue生成用として `dify/projectflow-dify-context.md` を管理します。このファイルは `develop` 更新時にGitHub Actionsが自動生成するため、手動編集しないでください。必要な場合はActions画面の `Generate Dify Context` から手動実行もできます。
 
-CHASSU(CRE8)は現在実装済みの機能と追加開発候補をもとに、追加機能案を生成します。出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
+取得手順:
+
+```bash
+git switch develop
+git pull origin develop
+```
+
+取得後、`dify/projectflow-dify-context.md` を社内Difyへアップロードします。
+
+Difyの出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
 
 - 実装済み機能と重複していないか。
 - ProjectFlowの目的・技術構成・学習用途から逸脱していないか。
@@ -179,7 +188,7 @@ CHASSU(CRE8)は現在実装済みの機能と追加開発候補をもとに、�
 - 複数Issueに分割すべき大きさではないか。
 - [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) の形式に整理できているか。
 
-CHASSU(CRE8)のURLはREADMEへ直接固定記載せず、管理者から共有します。CHASSU(CRE8)へ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
+DifyのURLはREADMEへ直接固定記載せず、管理者から共有します。Difyへ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
 
 ## 8. ローカル起動
 
