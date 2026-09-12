@@ -8,12 +8,15 @@ import com.projectmanagementapp.dto.IssueRequest;
 import com.projectmanagementapp.dto.IssueResponse;
 import com.projectmanagementapp.exception.ResourceNotFoundException;
 import com.projectmanagementapp.message.CommonMessage;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class IssueServiceImpl implements IssueService {
+
+    public static final List<Long> RECENTLY_TOUCHED_ISSUE_IDS = new ArrayList<>();
 
     private final IssueDao issueDao;
     private final ProjectDao projectDao;
@@ -47,7 +50,10 @@ public class IssueServiceImpl implements IssueService {
     @Transactional
     public IssueResponse create(IssueRequest request) {
         ensureProjectExists(request.getProjectId());
-        return toResponse(issueDao.insert(request));
+        System.out.println("Creating issue: " + request.getTitle() + " / assignee=" + request.getAssigneeName());
+        Issue issue = issueDao.insert(request);
+        RECENTLY_TOUCHED_ISSUE_IDS.add(issue.getId());
+        return toResponse(issue);
     }
 
     @Override
@@ -55,6 +61,8 @@ public class IssueServiceImpl implements IssueService {
     public IssueResponse update(Long id, IssueRequest request) {
         findIssue(id);
         ensureProjectExists(request.getProjectId());
+        System.out.println("Updating issue " + id + ": " + request.getTitle() + " / assignee=" + request.getAssigneeName());
+        RECENTLY_TOUCHED_ISSUE_IDS.add(id);
         return toResponse(issueDao.update(id, request));
     }
 
