@@ -167,9 +167,9 @@ docs更新対象は [docs/08_ドキュメント更新ルール.md](docs/08_ド�
 - マージ後にIssueを完了状態へする。
 - [docs/01_システム仕様書.md](docs/01_システム仕様書.md) が現在状態を表しているか確認する。
 
-## 7. Dify用実装コンテキスト
+## 7. CHASSU(CRE8)用実装コンテキスト
 
-`develop` ブランチでは、社内Difyによる追加開発Issue生成用として `dify/projectflow-dify-context.md` を管理します。このファイルは `develop` 更新時にGitHub Actionsが自動生成するため、手動編集しないでください。必要な場合はActions画面の `Generate Dify Context` から手動実行もできます。
+`develop` ブランチでは、CHASSU(CRE8)による追加開発Issue生成用として `dify/projectflow-dify-context.md` を管理します。このファイルは `develop` 更新時にGitHub Actionsが自動生成するため、手動編集しないでください。必要な場合はActions画面の `Generate Dify Context` から手動実行もできます。
 
 取得手順:
 
@@ -178,9 +178,9 @@ git switch develop
 git pull origin develop
 ```
 
-取得後、`dify/projectflow-dify-context.md` を社内Difyへアップロードします。
+取得後、`dify/projectflow-dify-context.md` を社内CHASSU(CRE8)へアップロードします。
 
-Difyの出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
+CHASSU(CRE8)の出力は提案であり、そのままIssue化せず、リーダーが以下を確認します。
 
 - 実装済み機能と重複していないか。
 - ProjectFlowの目的・技術構成・学習用途から逸脱していないか。
@@ -188,7 +188,7 @@ Difyの出力は提案であり、そのままIssue化せず、リーダーが�
 - 複数Issueに分割すべき大きさではないか。
 - [.github/ISSUE_TEMPLATE/feature_request.md](.github/ISSUE_TEMPLATE/feature_request.md) の形式に整理できているか。
 
-DifyのURLはREADMEへ直接固定記載せず、管理者から共有します。Difyへ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
+CHASSU(CRE8)のURLはREADMEへ直接固定記載せず、管理者から共有します。Difyへ社内情報、顧客情報、個人情報、機密情報を入力しないでください。
 
 ## 8. ローカル起動
 
