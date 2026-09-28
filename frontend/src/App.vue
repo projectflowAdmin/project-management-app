@@ -65,6 +65,10 @@
             <span class="user-avatar small">PF</span>
             <span>管理者</span>
           </div>
+          <!-- ログアウトボタン -->
+          <button class="button danger small" type="button" @click="openDialog" style="margin-left: auto;">
+            ログアウト
+          </button>
         </div>
       </header>
 
@@ -73,12 +77,72 @@
       </main>
     </div>
   </div>
+
+  <!-- モーダル -->
+  <dialog ref="logoutDialog" class="modal-dialog">
+    <div class="dialog-content">
+      <h3>ログアウトの確認</h3>
+      <p>アカウントからログアウトしますか？</p>
+      <div class="dialog-actions">
+        <button class="button secondary" type="button" @click="closeDialog">キャンセル</button>
+        <button class="button danger" type="button" @click="handleLogout">ログアウト</button>
+      </div>
+    </div>
+  </dialog>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { computed, ref } from "vue";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
+
 const isPublicLayout = computed(() => route.meta.publicLayout === true);
+
+const logoutDialog = ref<HTMLDialogElement | null>(null);
+
+// ダイアログを開く
+function openDialog() {
+  logoutDialog.value?.showModal();
+}
+
+// ダイアログを閉じる
+function closeDialog() {
+  logoutDialog.value?.close();
+}
+
+// ログアウトを実行してログイン画面へ
+function handleLogout() {
+  closeDialog();
+  //すべてのデータ(フロント側のログイン状態)をクリアする
+  localStorage.clear()
+  router.push("/login");
+}
 </script>
+
+<style scoped>
+.modal-dialog {
+  border: none;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content h3 {
+  margin-top: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+</style>
