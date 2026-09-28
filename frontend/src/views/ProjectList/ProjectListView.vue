@@ -72,24 +72,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { computed, onMounted, ref, watch } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import PageSection from "../../components/PageSection.vue";
 import { projectApi } from "../../api/projectApi";
 import type { Project } from "../../types/project";
 
+const route = useRoute();
+const router = useRouter();
+
 const projects = ref<Project[]>([]);
 const error = ref("");
-const query = ref("");
+
+// 初期値として、URLのクエリパラメータがあればそれをセット、なければ空文字にする
+const query = ref(String(route.query.keyword || ""));
+
+// 検索入力欄（query）の変化を検知してURLのクエリパラメータを書き換える
+watch(query, (newQuery) => {
+  router.replace({
+    query: {
+      ...route.query,
+      keyword: newQuery.trim() || undefined, // 空文字の場合はURLからクエリパラメータ自体を削除する
+    },
+  });
+});
+
+// ブラウザの「戻る」「進む」ボタンなどでURLのクエリパラメータが変わったときに入力欄と連動させる
+watch(
+  () => route.query.keyword,
+  (newRouteQuery) => {
+    query.value = String(newRouteQuery || "");
+  }
+);
 
 const filteredProjects = computed(() => {
-  const keyword = query.value.trim().toLowerCase();
-  if (!keyword) return projects.value;
+  const keywordValue = query.value.trim().toLowerCase();
+  if (!keywordValue) return projects.value;
 
   return projects.value.filter((project) =>
     [project.projectKey, project.name, project.description]
       .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(keyword))
+      .some((value) => String(value).toLowerCase().includes(keywordValue))
   );
 });
 
