@@ -78,7 +78,10 @@
             <td><span :class="['badge', statusClass(issue.status)]">{{ issue.statusLabel }}</span></td>
             <td><span :class="['badge', priorityClass(issue.priority)]">{{ issue.priorityLabel }}</span></td>
             <td>{{ issue.assigneeName || "未設定" }}</td>
-            <td>{{ issue.dueDate || "-" }}</td>
+            <td>
+              <span>{{ issue.dueDate || "-" }}</span>
+              <span v-if="isOverdue(issue)" class="badge status-review" style="margin-left: 6px; background-color: #ff4d4f; color: white;">期限切れ</span>
+            </td>
             <td>{{ formatDate(issue.updatedAt) }}</td>
             <td class="actions">
               <RouterLink class="button secondary" :to="`/issues/${issue.id}/edit`">編集</RouterLink>
@@ -106,8 +109,11 @@
             <span>#{{ issue.id }} {{ issue.projectKey }}</span>
             <span>{{ issue.assigneeName || "未設定" }}</span>
           </div>
-          <div class="actions">
-            <span :class="['badge', priorityClass(issue.priority)]">{{ issue.priorityLabel }}</span>
+          <div class="actions" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+            <div>
+              <span :class="['badge', priorityClass(issue.priority)]">{{ issue.priorityLabel }}</span>
+              <span v-if="isOverdue(issue)" class="badge" style="background-color: #ff4d4f; color: white; margin-left: 4px;">期限切れ</span>
+            </div>
             <span class="muted">{{ issue.dueDate || "期限なし" }}</span>
           </div>
         </RouterLink>
@@ -127,12 +133,15 @@
           <small>{{ issue.projectKey }} / {{ issue.assigneeName || "未設定" }}</small>
         </div>
         <div>{{ formatDateOnly(issue.createdAt) }}</div>
-        <div>{{ issue.dueDate || "-" }}</div>
+        <td>
+          <span>{{ issue.dueDate || "-" }}</span>
+          <div v-if="isOverdue(issue)" style="font-size: 11px; color: #ff4d4f; font-weight: bold;">[期限切れ]</div>
+        </td>
         <div class="timeline-track">
           <span
             class="timeline-bar"
-            :class="timelineClass(issue.status)"
-            :style="{ left: `${(index % 5) * 58}px`, width: `${150 + (index % 4) * 42}px` }"
+            :class="[timelineClass(issue.status), isOverdue(issue) ? 'overdue-bar' : '']"
+            :style="{ left: `${(index % 5) * 58}px`, width: `${150 + (index % 4) * 42}px`,backgroundColor: isOverdue(issue) ? '#ff4d4f' : undefined }"
           ></span>
         </div>
       </div>
@@ -215,6 +224,26 @@ function timelineClass(status: IssueStatus) {
     REVIEW: "review",
     DONE: "done"
   }[status];
+}
+
+function isOverdue(issue: Issue): boolean {
+  // 期限日が設定されていない課題は対象外
+  if (!issue.dueDate) return false;
+
+  // ステータスが「完了(DONE)」の課題は対象外
+  if (issue.status === "DONE") return false;
+
+  // 現在日（今日）の「日付のみ」と期限日のタイムスタンプを比較
+  const today = new Date();
+  // 時間を切り捨てて今日の日付にする
+  today.setHours(0, 0, 0, 0);
+
+  const due = new Date(issue.dueDate);
+  // 期限日の時間も切り捨てる
+  due.setHours(0, 0, 0, 0);
+
+  // 期限日が現在日より前（過去）であれば true
+  return due.getTime() < today.getTime();
 }
 
 async function load() {
