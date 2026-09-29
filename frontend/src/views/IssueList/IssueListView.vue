@@ -42,11 +42,20 @@
           <option value="REVIEW">レビュー中</option>
           <option value="DONE">完了</option>
         </select>
+        <select v-model="filters.priority">
+          <option value="">すべての優先度</option>
+          <option value="LOW">低</option>
+          <option value="MEDIUM">中</option>
+          <option value="HIGH">高</option>
+        </select>
       </div>
       <div class="view-switcher" aria-label="View switcher">
-        <button class="view-button" :class="{ active: viewMode === 'list' }" type="button" @click="viewMode = 'list'">一覧</button>
-        <button class="view-button" :class="{ active: viewMode === 'board' }" type="button" @click="viewMode = 'board'">ボード</button>
-        <button class="view-button" :class="{ active: viewMode === 'timeline' }" type="button" @click="viewMode = 'timeline'">ガント</button>
+        <button class="view-button" :class="{ active: viewMode === 'list' }" type="button"
+          @click="viewMode = 'list'">一覧</button>
+        <button class="view-button" :class="{ active: viewMode === 'board' }" type="button"
+          @click="viewMode = 'board'">ボード</button>
+        <button class="view-button" :class="{ active: viewMode === 'timeline' }" type="button"
+          @click="viewMode = 'timeline'">ガント</button>
       </div>
     </div>
 
@@ -95,8 +104,8 @@
           <span>{{ column.label }}</span>
           <span>{{ column.items.length }}</span>
         </div>
-        <RouterLink
-          v-for="issue in column.items"
+        <RouterLink 
+          v-for="issue in column.items" 
           :key="issue.id"
           :to="`/issues/${issue.id}`"
           :class="['task-card', statusClass(issue.status)]"
@@ -129,8 +138,8 @@
         <div>{{ formatDateOnly(issue.createdAt) }}</div>
         <div>{{ issue.dueDate || "-" }}</div>
         <div class="timeline-track">
-          <span
-            class="timeline-bar"
+          <span 
+            class="timeline-bar" 
             :class="timelineClass(issue.status)"
             :style="{ left: `${(index % 5) * 58}px`, width: `${150 + (index % 4) * 42}px` }"
           ></span>
@@ -156,17 +165,25 @@ const projects = ref<Project[]>([]);
 const error = ref("");
 const query = ref("");
 const viewMode = ref<ViewMode>("list");
-const filters = reactive<{ projectId: string; status: "" | IssueStatus }>({ projectId: "", status: "" });
+const filters = reactive<{ projectId: string; status: "" | IssueStatus; priority: "" | IssuePriority }>({ projectId: "", status: "", priority: "" });
 
 const filteredIssues = computed(() => {
-  const keyword = query.value.trim().toLowerCase();
-  if (!keyword) return issues.value;
+  let result = issues.value;
 
-  return issues.value.filter((issue) =>
-    [issue.title, issue.projectKey, issue.projectName, issue.assigneeName, issue.statusLabel, issue.priorityLabel]
-      .filter(Boolean)
-      .some((value) => String(value).toLowerCase().includes(keyword))
-  );
+  if (filters.priority) {
+    result = result.filter((issue) => issue.priority === filters.priority);
+  }
+
+  const keyword = query.value.trim().toLowerCase();
+  if (keyword) {
+    result = result.filter((issue) =>
+      [issue.title, issue.projectKey, issue.projectName, issue.assigneeName, issue.statusLabel, issue.priorityLabel]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(keyword))
+    );
+  }
+
+  return result;
 });
 
 const openIssueCount = computed(() => filteredIssues.value.filter((issue) => issue.status !== "DONE").length);
@@ -228,6 +245,7 @@ async function resetFilters() {
   query.value = "";
   filters.projectId = "";
   filters.status = "";
+  filters.priority = "";
   await load();
 }
 
