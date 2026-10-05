@@ -27,7 +27,7 @@ project-management-app/
 | JDK 21 | Backend 実行・ビルド | `JAVA_HOME` を JDK 21 に設定 |
 | Apache Maven 3.9.16 | Backend 依存関係解決・起動 | このリポジトリには Maven Wrapper は含まれていないため、Maven 本体が必要 |
 | Node.js 22 系 | Frontend 実行・ビルド | npm 同梱版を使用 |
-| PostgreSQL 16.14 | ローカル DB | EnterpriseDB のダウンロードページから 16.14 を選択 |
+| PostgreSQL 16.15 | ローカル DB | EnterpriseDB のダウンロードページから 16.15 を選択 |
 | pgAdmin または psql | DB 操作 | DB・ユーザー作成、接続確認で使用 |
 
 ### 2.1 Visual Studio Code のインストール
@@ -184,7 +184,7 @@ mvn -version
 
 Java は 21 系、Maven は 3.9 系が表示されれば問題ありません。
 
-### 5.4 PostgreSQL 16.14 のインストール
+### 5.4 PostgreSQL 16.15 のインストール
 
 PostgreSQL が未インストールの場合は、以下の EnterpriseDB のダウンロードページを開き、Windows 用の PostgreSQL `16.15` を選択してインストールします。(バージョンが進んでいる場合は16系を選択してください。)
 
