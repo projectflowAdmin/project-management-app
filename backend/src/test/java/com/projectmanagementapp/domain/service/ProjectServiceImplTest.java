@@ -7,6 +7,8 @@ import com.projectmanagementapp.exception.BusinessException;
 import com.projectmanagementapp.exception.ResourceNotFoundException;
 import com.projectmanagementapp.message.CommonMessage;
 import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -83,6 +85,46 @@ class ProjectServiceImplTest {
             .hasMessage(CommonMessage.PROJECT_HAS_ISSUES);
     }
 
+    @Test
+    @DisplayName("プロジェクト登録時、大文字小文字を区別せずキーが重複している場合は例外をスロー")
+    void createThrowsBusinessExceptionWhenProjectKeyIsDuplicatedIgnoreCase() {
+        // 1. 準備：すでに大文字の「APP」が存在する状態をシミュレート
+        // projectDao.findAll() が既存のプロジェクトリスト（"APP" を含む）を返すように設定
+        java.util.List<com.projectmanagementapp.domain.model.Project> existingProjects = java.util.List.of(project());
+        when(projectDao.findAll()).thenReturn(existingProjects);
+
+        ProjectRequest request = request(); // デフォルトは "APP"（小文字「app」でテストしたい場合は new ProjectRequest("app", ...) にしてもOK）
+
+        // 2. 検証：登録を実行したときに BusinessException がスローされること
+        assertThatThrownBy(() -> projectService.create(request))
+            .isInstanceOf(BusinessException.class)
+            .hasMessage(CommonMessage.PROJECT_KEY_ALREADY_USED);
+
+        // 3. 呼び出し検証
+        verify(projectDao).findAll();
+        verifyNoMoreInteractions(projectDao);
+    }
+
+    @Test
+    @DisplayName("プロジェクト更新時、大文字小文字を区別せず他プロジェクトとキーが重複している場合は例外をスロー")
+    void updateThrowsBusinessExceptionWhenProjectKeyIsUsedByOtherProjectIgnoreCase() {
+        // 1. 準備：ID=1L のプロジェクト（APP）を更新しようとするが、
+        // すでに別のプロジェクト（ID=2L, キー="APP"）が存在している状態をシミュレート
+        var otherProject = new com.projectmanagementapp.domain.model.Project(2L, "APP", "他アプリ", "説明", NOW, NOW);
+        java.util.List<com.projectmanagementapp.domain.model.Project> existingProjects = java.util.List.of(project(), otherProject);
+        
+        when(projectDao.findById(1L)).thenReturn(project());
+        when(projectDao.findAll()).thenReturn(existingProjects);
+
+        // 自分（ID=1L）のキーを小文字の「app」に更新しようとするが、他（ID=2L）が「APP」を握っているためエラーになるケース
+        ProjectRequest request = new ProjectRequest("app", "アプリ開発", "ProjectFlow開発用");
+
+        // 2. 検証：更新を実行したときに BusinessException がスローされること
+        assertThatThrownBy(() -> projectService.update(1L, request))
+            .isInstanceOf(BusinessException.class)
+            .hasMessage(CommonMessage.PROJECT_KEY_ALREADY_USED);
+    }
+    
     private ProjectRequest request() {
         return new ProjectRequest("APP", "アプリ開発", "ProjectFlow開発用");
     }
