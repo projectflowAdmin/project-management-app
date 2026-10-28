@@ -33,19 +33,34 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectResponse create(ProjectRequest request) {
-        if (projectDao.existsByProjectKey(request.getProjectKey())) {
+        List<Project> allProjects = projectDao.findAll();
+        
+        boolean isDuplicated = allProjects.stream()
+            .anyMatch(p -> p.getProjectKey().equalsIgnoreCase(request.getProjectKey()));
+            
+        if (isDuplicated) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
+        
         return toResponse(projectDao.insert(request));
     }
 
     @Override
     @Transactional
     public ProjectResponse update(Long id, ProjectRequest request) {
+
         findProject(id);
-        if (projectDao.existsByProjectKeyAndIdNot(request.getProjectKey(), id)) {
+        
+        List<Project> allProjects = projectDao.findAll();
+        
+        boolean isDuplicated = allProjects.stream()
+            .filter(p -> !p.getId().equals(id)) 
+            .anyMatch(p -> p.getProjectKey().equalsIgnoreCase(request.getProjectKey()));
+            
+        if (isDuplicated) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
+        
         return toResponse(projectDao.update(id, request));
     }
 
