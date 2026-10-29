@@ -59,16 +59,48 @@ class ProjectControllerTest {
             .build();
     }
 
+    // @Test
+    // void findAllReturnsProjects() throws Exception {
+    //     when(projectService.findAll()).thenReturn(List.of(projectResponse()));
+
+    //     mockMvc.perform(get("/api/projects"))
+    //         .andExpect(status().isOk())
+    //         .andExpect(jsonPath("$[0].id").value(1))
+    //         .andExpect(jsonPath("$[0].projectKey").value("APP"))
+    //         .andExpect(jsonPath("$[0].name").value("アプリ開発"));
+    // }
+
     @Test
-    void findAllReturnsProjects() throws Exception {
-        when(projectService.findAll()).thenReturn(List.of(projectResponse()));
+    @org.junit.jupiter.api.DisplayName("findAll：キーワード未指定の場合に全件取得できること")
+    void findAll_shouldReturnAllProjects_whenNoKeywordProvided() throws Exception {
+        // パラメータが指定されない（null）場合の挙動をモック
+        when(projectService.findAll(null)).thenReturn(List.of(projectResponse()));
 
         mockMvc.perform(get("/api/projects"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(1))
             .andExpect(jsonPath("$[0].projectKey").value("APP"))
             .andExpect(jsonPath("$[0].name").value("アプリ開発"));
+
+        verify(projectService).findAll(null);
     }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：キーワードを指定した場合にフィルタリングされたリストが取得できること")
+    void findAll_shouldReturnFilteredProjects_whenKeywordIsProvided() throws Exception {
+        // キーワード「app」が指定された場合の挙動をモック
+        when(projectService.findAll("app")).thenReturn(List.of(projectResponse()));
+
+        // ?keyword=app パラメータ付きで GET リクエストを実行
+        mockMvc.perform(get("/api/projects").param("keyword", "app"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].id").value(1))
+            .andExpect(jsonPath("$[0].projectKey").value("APP"))
+            .andExpect(jsonPath("$[0].name").value("アプリ開発"));
+
+        verify(projectService).findAll("app");
+    }
+
 
     @Test
     void findByIdReturnsNotFoundWhenProjectDoesNotExist() throws Exception {
