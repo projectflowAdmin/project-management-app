@@ -83,6 +83,46 @@ class ProjectServiceImplTest {
             .hasMessage(CommonMessage.PROJECT_HAS_ISSUES);
     }
 
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：キーワードが未指定または空の場合は全件取得できること")
+    void findAllReturnsAllProjectsWhenKeywordIsEmpty() {
+        var p1 = project();
+        var p2 = new Project(2L, "MGR", "管理ツール", "説明文", NOW, NOW);
+        when(projectDao.findAll()).thenReturn(java.util.List.of(p1, p2));
+
+        var responseNull = projectService.findAll(null);
+        assertThat(responseNull).hasSize(2);
+
+        var responseBlank = projectService.findAll(" ");
+        assertThat(responseBlank).hasSize(2);
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：プロジェクトキー、名称、説明のいずれかに大文字小文字を区別せず部分一致するデータが取得できること")
+    void findAllFiltersProjectsByKeywordIgnoreCase() {
+        var p1 = new Project(1L, "PROJ-A", "アプリ開発", "概要テキスト", NOW, NOW);
+        var p2 = new Project(2L, "PROJ-B", "システム設計", "APPの解説", NOW, NOW); 
+        var p3 = new Project(3L, "PROJ-C", "WEB APP", null, NOW, NOW);         
+        when(projectDao.findAll()).thenReturn(java.util.List.of(p1, p2, p3));
+
+        var response = projectService.findAll("app");
+
+        assertThat(response).hasSize(2);
+        assertThat(response.get(0).getProjectKey()).isEqualTo("PROJ-B");
+        assertThat(response.get(1).getProjectKey()).isEqualTo("PROJ-C");
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：一致するプロジェクトがない場合、空の配列が返されること")
+    void findAllReturnsEmptyListWhenNoProjectMatches() {
+        when(projectDao.findAll()).thenReturn(java.util.List.of(project()));
+
+        var response = projectService.findAll("XYZ");
+
+        assertThat(response).isEmpty();
+    }
+
+
     private ProjectRequest request() {
         return new ProjectRequest("APP", "アプリ開発", "ProjectFlow開発用");
     }

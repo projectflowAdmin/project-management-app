@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,10 +27,16 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping
-    public List<ProjectResponse> findAll() {
-        return projectService.findAll();
+    // @GetMapping
+    // public List<ProjectResponse> findAll() {
+    //     return projectService.findAll();
+    // }
+
+     @GetMapping
+    public List<ProjectResponse> findAll(@RequestParam(required = false) String keyword) {
+        return projectService.findAll(keyword);
     }
+
 
     @GetMapping("/{id}")
     public ProjectResponse findById(@PathVariable Long id) {
