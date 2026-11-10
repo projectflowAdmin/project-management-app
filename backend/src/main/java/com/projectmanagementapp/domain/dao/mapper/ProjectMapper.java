@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface ProjectMapper {
-    List<Project> findAll();
+    List<Project> findAll(@Param("keyword") String keyword);
     Project findById(Long id);
     Project findByProjectKey(String projectKey);
     boolean existsByProjectKey(String projectKey);
