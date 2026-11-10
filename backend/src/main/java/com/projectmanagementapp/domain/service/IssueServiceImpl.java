@@ -25,7 +25,13 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public List<IssueResponse> findAll(Long projectId, IssueStatus status) {
+        // 受入条件：プロジェクトIDが指定されている場合、課題検索前に存在確認を行う
+        if (projectId != null) {
+            ensureProjectExists(projectId);
+        }
+
         List<Issue> issues;
+        // ステータス条件と同時に指定された場合も、上記の存在確認を通った後にここへ到達します
         if (projectId != null && status != null) {
             issues = issueDao.findByProjectIdAndStatus(projectId, status);
         } else if (projectId != null) {
@@ -33,6 +39,7 @@ public class IssueServiceImpl implements IssueService {
         } else if (status != null) {
             issues = issueDao.findByStatus(status);
         } else {
+            // プロジェクトIDが未指定の場合は、既存の全件取得処理を維持
             issues = issueDao.findAll();
         }
         return issues.stream().map(this::toResponse).toList();
