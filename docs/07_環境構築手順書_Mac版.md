@@ -521,14 +521,42 @@ VS Codeから起動する場合の実行アイコンは、以下の画像の赤�
 
 ## 16. ビルド・テスト
 
-Backendのテストを実行します。
+### 16.1 テスト用DBの初回構築
+
+Mapperの単体テストは、開発用の `postgres` データベースとは別の `projectflow_test` データベースを使用します。各作業者のローカル環境で、PostgreSQLを起動して以下を一度だけ実行してください。すでにDBがある場合、作成コマンドは不要です。
+
+```zsh
+psql -h localhost -p 5432 -U postgres -d postgres -v ON_ERROR_STOP=1 -c "CREATE DATABASE projectflow_test;"
+```
+
+続いて「10. DB初期構築SQL」に記載した既存の初期構築SQLのうち、`001`〜`005`を番号順に実行します。その際、各コマンドの接続先指定 `-d postgres` を **`-d projectflow_test`** に置き換えてください。テスト専用のDDLは作成せず、開発用DBと同じSQLファイルを使用します。開発用の初期データを投入する `006_insert_initial_data.sql` は、テスト用DBには実行しません。
+
+リポジトリのルートディレクトリで以下を実行し、テーブルが作成されたことを確認します。
+
+```zsh
+psql -h localhost -p 5432 -U postgres -d projectflow_test -c "\dt management_app.*"
+```
+
+接続設定は `backend/src/test/resources/application-test.yml` です。接続先DBが `projectflow_test` であることを確認し、ユーザー名・パスワードを各自のPostgreSQL設定に合わせてください。テーブル構成を変更するSQLが追加された場合は、開発用DBと同じ変更SQLをテスト用DBにも適用します。
+
+### 16.2 Backendのテスト実行
+
+リポジトリのルートディレクトリから以下を実行します。全体のテストでも `test` プロファイルを指定し、テスト用DBの接続設定を使用します。
 
 ```zsh
 cd backend
-mvn test
+mvn test -Dspring.profiles.active=test
 ```
 
-Backendの自動テストでも `application-local.yml` のローカルPostgreSQL設定を使用します。テスト専用DBの構築は行いません。今後RepositoryやMapperのテストを追加する場合は、テストごとに必要なデータを作成し、テスト後に後片付けを行ってください。
+`IssueMapperTest`だけを実行する場合は、`backend` ディレクトリで以下を実行します。このテストクラスには `@ActiveProfiles("test")` があるため、プロファイルの追加指定は不要です。
+
+```zsh
+mvn test -Dtest=IssueMapperTest
+```
+
+テストに必要なデータは各ケースの前にSQLで投入し、投入前の削除とテスト中のデータ変更は、ケース終了時に `@Transactional` でロールバックします。テストデータの手動投入は不要です。DBやテーブルの作成は、テスト実行時には自動で行いません。
+
+### 16.3 Frontendのビルド確認
 
 Frontendのビルド確認を実行します。
 
