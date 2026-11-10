@@ -22,7 +22,10 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectResponse> findAll() {
-        return projectDao.findAll().stream().map(this::toResponse).toList();
+        List<Project> filteredProjects = projectDao.findAll();
+        return filteredProjects.stream()
+            .map(this::toResponse)
+            .toList();
     }
 
     @Override
@@ -33,21 +36,30 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectResponse create(ProjectRequest request) {
-        if (projectDao.existsByProjectKey(request.getProjectKey())) {
+        String uppercaseKey = request.getProjectKey().toUpperCase();
+        if (projectDao.existsByProjectKey(uppercaseKey)) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
+        
+        // 确保存入数据库的也是大写
+        request.setProjectKey(uppercaseKey);
         return toResponse(projectDao.insert(request));
     }
+
 
     @Override
     @Transactional
     public ProjectResponse update(Long id, ProjectRequest request) {
         findProject(id);
-        if (projectDao.existsByProjectKeyAndIdNot(request.getProjectKey(), id)) {
+        String uppercaseKey = request.getProjectKey().toUpperCase();
+        if (projectDao.existsByProjectKeyAndIdNot(uppercaseKey, id)) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
+        
+        request.setProjectKey(uppercaseKey);
         return toResponse(projectDao.update(id, request));
     }
+
 
     @Override
     @Transactional
