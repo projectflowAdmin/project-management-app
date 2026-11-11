@@ -20,10 +20,43 @@ public class ProjectServiceImpl implements ProjectService {
         this.projectDao = projectDao;
     }
 
+    // @Override
+    // public List<ProjectResponse> findAll() {
+    //     return projectDao.findAll().stream().map(this::toResponse).toList();
+    // }
     @Override
-    public List<ProjectResponse> findAll() {
-        return projectDao.findAll().stream().map(this::toResponse).toList();
+    public List<ProjectResponse> findAll(String keyword) {
+        List<Project> allProjects = projectDao.findAll();
+
+        // 受入条件：キーワードが未指定または空の場合、既存仕様どおり全プロジェクトが返される
+        if (keyword == null || keyword.isBlank()) {
+            return allProjects.stream().map(this::toResponse).toList();
+        }
+
+        // 検索キーワードを小文字に統一
+        String lowerKeyword = keyword.toLowerCase();
+
+        return allProjects.stream()
+            .filter(project -> {
+                // 1. プロジェクトキーのチェック
+                boolean matchKey = project.getProjectKey() != null 
+                    && project.getProjectKey().toLowerCase().contains(lowerKeyword);
+                
+                // 2. プロジェクト名のチェック
+                boolean matchName = project.getName() != null 
+                    && project.getName().toLowerCase().contains(lowerKeyword);
+                
+                // 3. 説明（description）のチェック（受入条件：未設定 NULL でもエラーが発生しないこと）
+                boolean matchDesc = project.getDescription() != null 
+                    && project.getDescription().toLowerCase().contains(lowerKeyword);
+                
+                // いずれかに部分一致すれば対象とする（anyMatchのため重複して返されない）
+                return matchKey || matchName || matchDesc;
+            })
+            .map(this::toResponse)
+            .toList();
     }
+
 
     @Override
     public ProjectResponse findById(Long id) {

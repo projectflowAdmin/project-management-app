@@ -6,7 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-001 | GET | `/api/health` | ヘルスチェック | 実装済み |
 | API-002 | GET | `/api/dashboard` | ダッシュボード集計取得 | 実装済み |
-| API-003 | GET | `/api/projects` | プロジェクト一覧取得 | 実装済み |
+| API-003 | GET | `/api/projects` | プロジェクト一覧取得（任意のキーワード検索パラメータ `keyword` に対応） | 実装済み |
 | API-004 | GET | `/api/projects/{id}` | プロジェクト詳細取得 | 実装済み |
 | API-005 | POST | `/api/projects` | プロジェクト登録 | 実装済み |
 | API-006 | PUT | `/api/projects/{id}` | プロジェクト更新 | 実装済み |
