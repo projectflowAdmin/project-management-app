@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +40,11 @@ class IssueServiceImplTest {
 
     @Test
     void findAllUsesProjectAndStatusFilters() {
+        // 【★この1行を追加！】 projectDao.findById(1L) が呼ばれたときにダミーのプロジェクトを返すように設定
+        var mockProject = new com.projectmanagementapp.domain.model.Project(1L, "PROJ-A", "アプリ開発", "説明", NOW, NOW);
+        when(projectDao.findById(1L)).thenReturn(mockProject);
+
+        // 以下は既存のコードのままです
         when(issueDao.findByProjectIdAndStatus(1L, IssueStatus.TODO)).thenReturn(List.of(issue()));
 
         var responses = issueService.findAll(1L, IssueStatus.TODO);
@@ -48,6 +54,7 @@ class IssueServiceImplTest {
         assertThat(responses.getFirst().getPriorityLabel()).isEqualTo("中");
         verify(issueDao).findByProjectIdAndStatus(1L, IssueStatus.TODO);
     }
+
 
     @Test
     void findByIdThrowsNotFoundWhenIssueDoesNotExist() {
@@ -94,6 +101,49 @@ class IssueServiceImplTest {
         verify(projectDao).findById(1L);
         verify(issueDao).update(10L, request);
     }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：存在しないプロジェクトIDが指定された場合、ResourceNotFoundExceptionをスローすること")
+    void findAllShouldThrowExceptionWhenProjectDoesNotExist() {
+        // 1. 準備：projectDao.findById(999L) が null（存在しない）を返すように設定
+        Long nonExistentProjectId = 999L;
+        when(projectDao.findById(nonExistentProjectId)).thenReturn(null);
+
+        // 2. 実行 & 検証：Serviceを実行したときに適切な例外がスローされること
+        com.projectmanagementapp.exception.ResourceNotFoundException exception = 
+            org.junit.jupiter.api.Assertions.assertThrows(
+                com.projectmanagementapp.exception.ResourceNotFoundException.class, 
+                () -> issueService.findAll(nonExistentProjectId, null)
+            );
+
+        // エラーメッセージが「プロジェクトが見つかりません」の形式であることを確認
+        org.assertj.core.api.Assertions.assertThat(exception.getMessage())
+            .isEqualTo(com.projectmanagementapp.message.CommonMessage.PROJECT_NOT_FOUND);
+
+        // 受入条件：プロジェクトが存在しない場合、課題検索処理（issueDao）が実行されないこと
+        verifyNoInteractions(issueDao);
+    }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("findAll：存在するが課題が0件のプロジェクトIDが指定された場合、空の配列が返されること")
+    void findAllShouldReturnEmptyListWhenProjectExistsButHasNoIssues() {
+        // 1. 準備：プロジェクトは存在するが、課題検索結果は空リストを返すように設定
+        Long existentProjectId = 1L;
+            var mockProject = new com.projectmanagementapp.domain.model.Project(
+                existentProjectId, "PROJ-A", "アプリ開発", "説明", null, null
+            );
+
+        when(projectDao.findById(existentProjectId)).thenReturn(mockProject);
+        when(issueDao.findByProjectId(existentProjectId)).thenReturn(java.util.List.of());
+
+        // 2. 実行
+        List<com.projectmanagementapp.dto.IssueResponse> response = issueService.findAll(existentProjectId, null);
+
+        // 3. 検証：HTTP 200相当（空の配列）が返ってくること
+        org.assertj.core.api.Assertions.assertThat(response).isEmpty();
+        verify(issueDao).findByProjectId(existentProjectId);
+    }
+
 
     private IssueRequest request() {
         return new IssueRequest(
