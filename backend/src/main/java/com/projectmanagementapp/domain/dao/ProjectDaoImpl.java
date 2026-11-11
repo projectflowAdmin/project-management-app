@@ -16,8 +16,9 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
-    public List<Project> findAll() {
-        return projectMapper.findAll();
+    public List<Project> findAll(String keyword) {
+        // 受け取ったキーワードをそのままMapper（XML側）に流し込む
+        return projectMapper.findAll(keyword);
     }
 
     @Override

@@ -21,9 +21,15 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectResponse> findAll() {
-        return projectDao.findAll().stream().map(this::toResponse).toList();
+    public List<ProjectResponse> findAll(String keyword) {
+        
+        List<Project> filteredProjects = projectDao.findAll(keyword);
+        return filteredProjects.stream()
+            .map(this::toResponse)
+            .toList();
     }
+
+
 
     @Override
     public ProjectResponse findById(Long id) {
@@ -33,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public ProjectResponse create(ProjectRequest request) {
+
         if (projectDao.existsByProjectKey(request.getProjectKey())) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
@@ -43,6 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     public ProjectResponse update(Long id, ProjectRequest request) {
         findProject(id);
+
         if (projectDao.existsByProjectKeyAndIdNot(request.getProjectKey(), id)) {
             throw new BusinessException(CommonMessage.PROJECT_KEY_ALREADY_USED);
         }
