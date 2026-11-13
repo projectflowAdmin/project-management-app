@@ -18,8 +18,18 @@
   <select id="findAll" resultMap="projectResultMap">
     SELECT id, project_key, name, description, created_at, updated_at
     FROM management_app.projects
+    <where>
+      <if test="keyword != null and keyword != ''">
+        (
+          project_key ILIKE CONCAT('%', #{keyword}, '%')
+          OR name ILIKE CONCAT('%', #{keyword}, '%')
+          OR description ILIKE CONCAT('%', #{keyword}, '%')
+        )
+      </if>
+    </where>
     ORDER BY id
   </select>
+
 
   <select id="findById" parameterType="long" resultMap="projectResultMap">
     SELECT id, project_key, name, description, created_at, updated_at
@@ -33,11 +43,12 @@
     WHERE project_key = #{projectKey}
   </select>
 
+
   <select id="existsByProjectKey" parameterType="string" resultType="boolean">
     SELECT EXISTS (
       SELECT 1
       FROM management_app.projects
-      WHERE project_key = #{projectKey}
+      WHERE LOWER(project_key) = LOWER(#{projectKey})
     )
   </select>
 
@@ -45,7 +56,7 @@
     SELECT EXISTS (
       SELECT 1
       FROM management_app.projects
-      WHERE project_key = #{projectKey}
+      WHERE LOWER(project_key) = LOWER(#{projectKey})
         AND id != #{id}
     )
   </select>
