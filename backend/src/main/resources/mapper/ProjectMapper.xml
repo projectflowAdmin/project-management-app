@@ -37,7 +37,7 @@
     SELECT EXISTS (
       SELECT 1
       FROM management_app.projects
-      WHERE project_key = #{projectKey}
+      WHERE project_key = LOWER(#{projectKey})
     )
   </select>
 
@@ -45,7 +45,7 @@
     SELECT EXISTS (
       SELECT 1
       FROM management_app.projects
-      WHERE project_key = #{projectKey}
+      WHERE project_key = LOWER(#{projectKey})
         AND id != #{id}
     )
   </select>
